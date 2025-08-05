@@ -1,0 +1,47 @@
+name: Publish pix counts
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "python/gen_pixel_counts.py"
+      - ".github/workflows/gen-pixel-counts.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.PUSH_TOKEN }}
+
+    - name: Get Image Files
+      run: |
+        pushd python
+        wget -qO- https://github.com/PSAM-5020-2025S-A/5020-utils/releases/latest/download/clouds.tar.gz | tar xz
+        wget -qO- https://github.com/PSAM-5020-2025S-A/5020-utils/releases/latest/download/flowers.tar.gz | tar xz
+        wget -qO- https://github.com/PSAM-5020-2025S-A/5020-utils/releases/latest/download/metfaces.tar.gz | tar xz
+        mv data/image/metfaces/256/* data/image/metfaces/
+        rm -rf data/image/metfaces/256 data/image/metfaces/1024
+        popd
+
+    - name: Gen Pixel Counts
+      run: |
+        pip install numpy Pillow
+        pushd python && python gen_pixel_counts.py
+        popd && mv python/pix_vals.json ./
+
+    - name: Release On Other Branch 💩
+      run: |
+        GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-8)
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        TAG_NAME=${{ github.ref_name }}-$(git log --format=%h -1)
+        git checkout --orphan release
+        git rm --cached -r .
+        git add -f pix_vals.json
+        git commit -m "release $TAG_NAME"
+        git push origin :release
+        git push origin release
