@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="main.css">
+    <script src="./js/dice.js"></script>
+    <script src="./js/pixels.js"></script>
+  </head>
+  <body>
+    <title>Distributions</title>
+
+    <section class="section" data-dice-section-idx="0">
+      <div class="section-text">
+        <div class="section-title">Uniform Distribution</div>
+        <span class="dice-roll" data-rolls="1">Once</span>
+        <span class="dice-roll" data-rolls="2">Twice</span>
+        <span class="dice-roll" data-rolls="10">Ten Times</span>
+        <span class="dice-roll" data-rolls="100">Hundred Times</span>
+        <span class="dice-roll" data-rolls="-1">Reset</span>
+      </div>
+      <div class="section-canvas">
+        <div id="graph-uniform-1" class="graph"></div>
+      </div>
+    </section>
+
+    <section class="section" data-dice-section-idx="1">
+      <div class="section-text">
+        <div class="section-title">Sum of Two Uniform Distributions</div>
+        <span class="dice-roll" data-rolls="1">Once</span>
+        <span class="dice-roll" data-rolls="2">Twice</span>
+        <span class="dice-roll" data-rolls="10">Ten Times</span>
+        <span class="dice-roll" data-rolls="100">Hundred Times</span>
+        <span class="dice-roll" data-rolls="-1">Reset</span>
+      </div>
+      <div class="section-canvas">
+        <div id="graph-uniform-2" class="graph"></div>
+      </div>
+    </section>
+
+    <section class="section" data-dice-section-idx="2">
+      <div class="section-text">
+        <div class="section-title">Gaussian Distributions</div>
+        <span class="dice-roll" data-rolls="1">Once</span>
+        <span class="dice-roll" data-rolls="2">Twice</span>
+        <span class="dice-roll" data-rolls="10">Ten Times</span>
+        <span class="dice-roll" data-rolls="100">Hundred Times</span>
+        <span class="dice-roll" data-rolls="1000">Thousand Times</span>
+        <span class="dice-roll" data-rolls="-1">Reset</span>
+        <br><br>
+        <span class="dice-change" data-dice="4">Four Dice</span>
+        <span class="dice-change" data-dice="8">Eight Dice</span>
+        <span class="dice-change" data-dice="16">Sixteen Dice</span>
+        <span class="dice-change" data-dice="3">Three Dice</span>
+      </div>
+      <div class="section-canvas">
+        <div id="graph-uniform-k" class="graph"></div>
+      </div>
+    </section>
+
+    <section class="section" data-pixel-section-idx="0">
+      <div class="section-text">
+        <div class="section-title">Red Values</div>
+        <span class="pixel-roll" data-rolls="1">Once</span>
+        <span class="pixel-roll" data-rolls="2">Twice</span>
+        <span class="pixel-roll" data-rolls="10">Ten Times</span>
+        <span class="pixel-roll" data-rolls="100">Hundred Times</span>
+        <span class="pixel-roll" data-rolls="1000">Thousand Times</span>
+        <span class="pixel-roll" data-rolls="-1">Reset</span>
+      </div>
+      <div class="section-canvas">
+        <div id="graph-red" class="graph-pixels"></div>
+      </div>
+    </section>
+
+    <section class="section" data-pixel-section-idx="1">
+      <div class="section-text">
+        <div class="section-title">RGB Values</div>
+        <span class="pixel-roll" data-rolls="1">Once</span>
+        <span class="pixel-roll" data-rolls="2">Twice</span>
+        <span class="pixel-roll" data-rolls="10">Ten Times</span>
+        <span class="pixel-roll" data-rolls="100">Hundred Times</span>
+        <span class="pixel-roll" data-rolls="1000">Thousand Times</span>
+        <span class="pixel-roll" data-rolls="-1">Reset</span>
+        <br><br>
+        <span class="pixel-change" data-source="flowers">Flowers</span>
+        <span class="pixel-change" data-source="metfaces">Portraits</span>
+        <span class="pixel-change" data-source="clouds">Clouds</span>
+      </div>
+      <div class="section-canvas">
+        <div id="graph-rgb-r" class="graph-pixels rgb r"></div>
+        <div id="graph-rgb-g" class="graph-pixels rgb g"></div>
+        <div id="graph-rgb-b" class="graph-pixels rgb b"></div>
+      </div>
+    </section>
+    
+  </body>
+</html>

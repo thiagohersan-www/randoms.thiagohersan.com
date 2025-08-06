@@ -1,0 +1,116 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+title {
+  display: block;
+}
+
+html, body {
+  width: 100%;
+}
+
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.section-text,
+.section-canvas {
+  width: 50%;
+}
+
+.section-text .section-title {
+  text-transform: uppercase;
+}
+
+.section-text .dice-roll,
+.section-text .dice-change,
+.section-text .pixel-roll,
+.section-text .pixel-change {
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline;
+}
+
+.section-canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 480px;
+}
+
+.graph,
+.graph-pixels {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  height: 80%;
+  margin-top: 20px;
+  /* border: 1px #000 solid; */
+}
+
+.graph-pixels {
+  min-width: 250px;
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  background-color: #666;
+  color: #eee;
+  align-self: flex-end;
+  border: 1px #000 solid;
+  user-select: none;
+}
+
+.bar.small {
+  font-size: 10px;
+}
+
+.bar.tiny {
+  font-size: 5px;
+}
+
+.bar.hide {
+  font-size: 0;
+}
+
+.graph-pixels .bar {
+  font-size: 0;
+  border: 0;
+  border-top: 4px #a22 solid;
+  background-color: #a22;
+}
+
+.graph-pixels.rgb {
+  position: absolute;
+  top: 0;
+  background-color: rgba(0,0,0,0);
+}
+
+.graph-pixels.rgb .bar {
+  background-color: rgba(0,0,0,0);
+}
+
+.graph-pixels.rgb.r .bar {
+  border-top: 4px #a22 solid;
+  background-color: #f004;
+}
+
+.graph-pixels.rgb.g .bar {
+  border-top: 4px #2a2 solid;
+  background-color: #0f04;
+}
+
+.graph-pixels.rgb.b .bar {
+  border-top: 4px #22a solid;
+  background-color: #00f4;
+}
