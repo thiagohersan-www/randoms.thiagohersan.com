@@ -1,0 +1,49 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+title {
+  display: block;
+}
+
+html, body {
+  width: 100%;
+}
+
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.section-text,
+.section-canvas {
+  width: 50%;
+}
+
+.section-text .section-title {
+  text-transform: uppercase;
+}
+
+.section-text .dice-roll,
+.section-text .dice-change,
+.section-text .pixel-roll,
+.section-text .pixel-change {
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline;
+}
+
+.section-canvas {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 480px;
+}
+
+p + p {
+  margin-top: 14px;
+}

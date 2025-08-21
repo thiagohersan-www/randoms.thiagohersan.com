@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/graphs.css">
     <script src="./js/dice.js"></script>
     <script src="./js/pixels.js"></script>
   </head>
@@ -11,12 +12,22 @@
     <section class="section" data-dice-section-idx="0">
       <div class="section-text">
         <div class="section-title">Uniform Distribution</div>
-        <span class="dice-roll" data-rolls="1">Once</span>
-        <span class="dice-roll" data-rolls="2">Twice</span>
-        <span class="dice-roll" data-rolls="10">Ten Times</span>
-        <span class="dice-roll" data-rolls="100">Hundred Times</span>
-        <span class="dice-roll" data-rolls="-1">Reset</span>
+
+        <p>Consider a six-sided die. We'll assume this is a fair die, so when we roll it, each of its faces has an equal probability of showing up. We're going to throw this die many times and use the graph on the right to keep track of the total times each of the six faces is rolled.</p>
+
+        <p>We can start by rolling the die <span class="dice-roll" data-rolls="1">once</span>. Every time we click <span class="dice-roll" data-rolls="1">here</span>, a roll is simulated and the resulting face is added to the graph. <span class="dice-roll" data-rolls="1">Try it</span>.</p>
+
+        <p>The rolling of the die is a random event. The result of each roll is independent of previous rolls and so knowing anything about the previous rolls doesn't give us any information about the next rolls. Individual rolls are not predictable.</p>
+
+        <p>But this doesn't mean that there's nothing to be said about the collective behavior of a series of rolls. Since this is a fair die, if we keep rolling it, the total number of times each face is rolled will eventually approach the same value.</p>
+
+        <p>We can speed up this process by simulating <span class="dice-roll" data-rolls="2">two rolls</span> at a time, or even <span class="dice-roll" data-rolls="10">10 rolls</span>. Even thought it initially might seem like one of the faces is prevalent, after 100s of rolls they all approach the same value.</p>
+
+        <p>We can <span class="dice-roll" data-rolls="-1">clear the graph</span> and start over, or simulate <span class="dice-roll" data-rolls="100">100 rolls</span> or even <span class="dice-roll" data-rolls="250">250 rolls</span> at once.</p>
+        
+        <p>Since the number of times each outcome shows up is the same, we call this type of random event uniform.</p>
       </div>
+
       <div class="section-canvas">
         <div id="graph-uniform-1" class="graph"></div>
       </div>
@@ -25,12 +36,20 @@
     <section class="section" data-dice-section-idx="1">
       <div class="section-text">
         <div class="section-title">Sum of Two Uniform Distributions</div>
-        <span class="dice-roll" data-rolls="1">Once</span>
-        <span class="dice-roll" data-rolls="2">Twice</span>
-        <span class="dice-roll" data-rolls="10">Ten Times</span>
-        <span class="dice-roll" data-rolls="100">Hundred Times</span>
-        <span class="dice-roll" data-rolls="-1">Reset</span>
+
+        <p>Let's imagine throwing a pair of fair six-sided dice. We're not going to read off their faces individually, but instead will sum the numbers rolled. Now, instead of 6 possible outcomes we have 11 possibilities: the numbers 2 through 12.</p>
+
+        <p>Let's simulated a couple of <span class="dice-roll" data-rolls="1">single rolls</span> of this pair of dice. Like before, we'll use the graph on the right to keep track of the total number of times each of the possible 11 sum outcomes shows up.</p>
+
+        <p>Besides having a larger set of possible outcomes, something else that is different about this setup is that the possible outcomes are not equally likely to show up. There are more ways of rolling a 7 than a 2. There are more ways of rolling a 6 than a 3. This random event isn't uniform.</p>
+
+        <p>Let's roll our pair of dice many times to see what happens in the long run. We can simulate a <span class="dice-roll" data-rolls="1">single roll</span> at a time, but like before, we are interested in the long run behavior of our dice, so it might be more helpful to simulate <span class="dice-roll" data-rolls="2">two rolls</span>, <span class="dice-roll" data-rolls="10">ten rolls</span>, <span class="dice-roll" data-rolls="100">100 rolls</span>, or even <span class="dice-roll" data-rolls="1000">1000 rolls</span> at a time. We can always <span class="dice-roll" data-rolls="-1">reset</span> our experiment if we want to start over.</p>
+
+        <p>After a few hundred rolls our graph should look symmetrical and slightly pyramidal. The most likely outcome, a sum of 7, should be 6 times more common than the least likely outcomes of 2 and 12. This is because there's only one way of rolling a 2 (a pair of 1s) and one way of rolling a 12 (pair of 6s), while there are 6 ways of rolling a sum or 7: (1,6) (2,5) (3,4) (4,3) (5,2) (6,1).</p>
+
+        <p>By the same logic, the total number of times a sum of 3 is rolled is twice the number of times a sum of 2 is rolled and half the number of times a 5 is rolled. There are two ways of rolling a 3 (1,2) (2,1) and four ways of rolling a 5 (1,4) (2,3) (3,2) (4,1).</p>
       </div>
+
       <div class="section-canvas">
         <div id="graph-uniform-2" class="graph"></div>
       </div>
@@ -39,33 +58,54 @@
     <section class="section" data-dice-section-idx="2">
       <div class="section-text">
         <div class="section-title">Gaussian Distributions</div>
-        <span class="dice-roll" data-rolls="1">Once</span>
-        <span class="dice-roll" data-rolls="2">Twice</span>
-        <span class="dice-roll" data-rolls="10">Ten Times</span>
-        <span class="dice-roll" data-rolls="100">Hundred Times</span>
-        <span class="dice-roll" data-rolls="1000">Thousand Times</span>
-        <span class="dice-roll" data-rolls="-1">Reset</span>
-        <br><br>
-        <span class="dice-change" data-dice="4">Four Dice</span>
-        <span class="dice-change" data-dice="8">Eight Dice</span>
-        <span class="dice-change" data-dice="16">Sixteen Dice</span>
-        <span class="dice-change" data-dice="3">Three Dice</span>
+
+        <p>What if we roll and sum up 3 fair six-sided dice rolled together? Let's simulate a few <span class="dice-roll" data-rolls="1">single rolls</span> and look at our graph as it accumulates the total number of times each outcome shows up. With 3 dice the total number of possible outcomes is 16: the sums 3 to 18. Like before, outcomes in the center of this range are more likely, while outcomes on the edges are more rare.</p>
+
+        <p>Let's again simulate 100s or 1000s of rolls to get to our symmetric distribution graph. We can do this by doing <span class="dice-roll" data-rolls="100">100</span> rolls at once, or <span class="dice-roll" data-rolls="1000">1000 rolls</span>.</p>
+
+        <p>There's nothing special about using <span class="dice-change" data-dice="2">two dice</span> or <span class="dice-change" data-dice="3">three dice</span>. We can simulate rolling <span class="dice-change" data-dice="4">four dice</span>, <span class="dice-change" data-dice="8">eight dice</span>, or even <span class="dice-change" data-dice="16">sixteen dice</span> at once, while keeping track of the sum of their faces using our graph on the right.</p>
+
+        <p>As before, wwe can always <span class="dice-roll" data-rolls="-1">reset</span> our experiment, or simulate <span class="dice-roll" data-rolls="100">100 rolls</span> or <span class="dice-roll" data-rolls="1000">1000 rolls</span> at once.</p>
+
+        <p>With more dice it takes more rolls to get to a pyramid-shaped graph, but it eventually shows up. Random events that have long-term outcomes with this kind of distribution are called normal or gaussian. Like uniform random events, there's no way of predicting the outcome of any single multi-dice roll, but over many rolls there are some very specific relationships we can expect to see from the cumulative behavior of our random events.</p>
       </div>
+
       <div class="section-canvas">
         <div id="graph-uniform-k" class="graph"></div>
       </div>
     </section>
 
+    <section class="section" data-color-section-idx="0">
+      <div class="section-text">
+        <div class="section-title">Other Events, Other Distributions</div>
+
+        <p>Uniform and Normal distributions are the simplest ones to visualize and understand, but they are not the only types of distributions for random events. There are some other well defined distributions like x,y,z that can be used to model other kinds of random events and the long term cumulative behavior of their outcomes.</p>
+
+        <p>Let's look at some distributions that have little to do with dice: images and their pixel values.</p>
+
+        <p>Pixels on images are made up of 3 values that represent how much red, green and blue is present on the color of the pixel. Each of these values is stored as a number between 0 and 255, where 0 represents no contribution from that channel and 255 is the strongest amount of contribution that channel can have to the overall color of the pixel. If this sounds strange, we can use the interface on the right to look at examples and build some intuition about how color is represented in an image file.</p>
+      </div>
+
+      <div class="section-canvas">
+        <div id="graph-colors" class="graph-pixels"></div>
+      </div>
+    </section>
+
     <section class="section" data-pixel-section-idx="0">
       <div class="section-text">
-        <div class="section-title">Red Values</div>
-        <span class="pixel-roll" data-rolls="1">Once</span>
-        <span class="pixel-roll" data-rolls="2">Twice</span>
-        <span class="pixel-roll" data-rolls="10">Ten Times</span>
-        <span class="pixel-roll" data-rolls="100">Hundred Times</span>
-        <span class="pixel-roll" data-rolls="1000">Thousand Times</span>
-        <span class="pixel-roll" data-rolls="-1">Reset</span>
+        <div class="section-title">Images</div>
+
+        <p>Let's consider only values from the red channel of images. Can we predict the amount of red at a given location for an image we haven't seen? Probably not. But, if we look at thousands and thousands of red pixel values for thousands of images, we might be able to say something about how their aggregate values are distributed.</p>
+
+        <p>Let's consider a dataset of flower images. It has 1000s of images of flowers like these:</p>
+
+        <p>Each image is 128 pixels tall and 128 pixels wide for a total of 16,384 pixels. If we load these images, we can analyze each of their pixels and count how many times each of the 256 possible values show up. It's like each pixel is a roll of a 256-sided die and we want to know, in the long run, if the die is fair or if it follows a different kind of random distribution.</p>
+
+        <p>We can start by loading and counting red values for a <span class="pixel-roll" data-rolls="1">single image</span>. Every time we hit the <span class="pixel-roll" data-rolls="1">single image</span> button a different image from our dataset is loaded and analyzed.</p>
+
+        <p>Since we're interested in the long run, aggregate behavior of our random events, let's analyze <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or even <span class="pixel-roll" data-rolls="1000">1000 images</span> at a time. We can always <span class="pixel-roll" data-rolls="-1">reset</span> our experiment and our graph.</p>
       </div>
+
       <div class="section-canvas">
         <div id="graph-red" class="graph-pixels"></div>
       </div>
@@ -73,18 +113,21 @@
 
     <section class="section" data-pixel-section-idx="1">
       <div class="section-text">
-        <div class="section-title">RGB Values</div>
-        <span class="pixel-roll" data-rolls="1">Once</span>
-        <span class="pixel-roll" data-rolls="2">Twice</span>
-        <span class="pixel-roll" data-rolls="10">Ten Times</span>
-        <span class="pixel-roll" data-rolls="100">Hundred Times</span>
-        <span class="pixel-roll" data-rolls="1000">Thousand Times</span>
-        <span class="pixel-roll" data-rolls="-1">Reset</span>
-        <br><br>
-        <span class="pixel-change" data-source="flowers">Flowers</span>
-        <span class="pixel-change" data-source="metfaces">Portraits</span>
-        <span class="pixel-change" data-source="clouds">Clouds</span>
+        <div class="section-title">More Colors, More Data</div>
+
+        <p>Let's look at the pixel values of all 3 channels at the same time. In addition to counting how many times each of the 256 values show up on the red channel, we'll also separately keep track of the frequency of the values for the green and blue channels.</p>
+
+        <p>We'll start by loading <span class="pixel-roll" data-rolls="1">single images</span>, but since we're interested in the cumulative behavior of our pixels, we can also speed up the process and analyze <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or <span class="pixel-roll" data-rolls="1000">1000 images</span> at once. <span class="pixel-roll" data-rolls="-1">Reset</span> clears our graph.</p>
+
+        <p>And, instead of <span class="pixel-change" data-source="flowers">flower images</span>, we can look at datasets of images of <span class="pixel-change" data-source="clouds">clouds</span>, like these:</p>
+
+        <p>or <span class="pixel-change" data-source="metfaces">paintings of faces</span>, like these:</p>
+
+        <p>Once we click on one of the buttons above to change datasets, we can again load and analyze a <span class="pixel-roll" data-rolls="1">single images</span>, <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or <span class="pixel-roll" data-rolls="1000">1000 images</span> at once. And, again, <span class="pixel-roll" data-rolls="-1">reset</span> clears our graph.</p>
+
+        <p>Once thousands of images are analyzed, each of the datasets seem to converge to a specific, and yet different, distribution. Some look like they could be approximated by a normal distribution, or a superposition of two normal distributions, while others seem to converge to something closer to a xxxx distribution.</p>
       </div>
+
       <div class="section-canvas">
         <div id="graph-rgb-r" class="graph-pixels rgb r"></div>
         <div id="graph-rgb-g" class="graph-pixels rgb g"></div>
