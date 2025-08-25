@@ -49,7 +49,8 @@ window.addEventListener("load", async () => {
 
   const MY_PIXELS = [
     [0].map(x => new Pixels(cloudData[x])),
-    [0,1,2].map(x => new Pixels(cloudData[x])),
+    [0, 1, 2].map(x => new Pixels(cloudData[x])),
+    [0, 1, 2].map(x => new Pixels(cloudData[x])),
   ];
 
   pixelRolls.forEach((el) => el.addEventListener("click", (evt) => {

@@ -46,6 +46,7 @@ class Dice {
       const mbar = document.createElement("div");
       const barHeight = this.counts[i] / max;
       mbar.classList.add(...mbarClasses);
+      mbar.dataset.x = i;
       mbar.style.height = `${barHeight * 100}%`;
       mbar.innerHTML = this.counts[i];
 

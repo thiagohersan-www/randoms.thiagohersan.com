@@ -97,13 +97,26 @@
 
         <p>Let's consider only values from the red channel of images. Can we predict the amount of red at a given location for an image we haven't seen? Probably not. But, if we look at thousands and thousands of red pixel values for thousands of images, we might be able to say something about how their aggregate values are distributed.</p>
 
-        <p>Let's consider a dataset of flower images. It has 1000s of images of flowers like these:</p>
+        <p>Let's consider a dataset of cloud images. It has 1000s of images of clouds, like these:</p>
+
+        <div class="image-container">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00001.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00009.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00011.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00013.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00121.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00109.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00131.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/clouds/clouds-00113.jpg">
+        </div>
 
         <p>Each image is 128 pixels tall and 128 pixels wide for a total of 16,384 pixels. If we load these images, we can analyze each of their pixels and count how many times each of the 256 possible values show up. It's like each pixel is a roll of a 256-sided die and we want to know, in the long run, if the die is fair or if it follows a different kind of random distribution.</p>
 
         <p>We can start by loading and counting red values for a <span class="pixel-roll" data-rolls="1">single image</span>. Every time we hit the <span class="pixel-roll" data-rolls="1">single image</span> button a different image from our dataset is loaded and analyzed.</p>
 
         <p>Since we're interested in the long run, aggregate behavior of our random events, let's analyze <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or even <span class="pixel-roll" data-rolls="1000">1000 images</span> at a time. We can always <span class="pixel-roll" data-rolls="-1">reset</span> our experiment and our graph.</p>
+
+        <p>After about one thousand images, the overall shape of our graph stops changing too much. It converges to the overall distribution of red-channel values for this dataset. In some ways this particular distribution looks like a wide gaussian, with a peak around the value 100.</p>
       </div>
 
       <div class="section-canvas">
@@ -113,19 +126,55 @@
 
     <section class="section" data-pixel-section-idx="1">
       <div class="section-text">
-        <div class="section-title">More Colors, More Data</div>
+        <div class="section-title">More Colors</div>
 
-        <p>Let's look at the pixel values of all 3 channels at the same time. In addition to counting how many times each of the 256 values show up on the red channel, we'll also separately keep track of the frequency of the values for the green and blue channels.</p>
+        <p>Not all channels will have the same distribution. Let's look at the pixel values of all 3 channels at the same time. In addition to counting how many times each of the 256 values show up on the red channel, we'll also separately keep track of the frequency of the values for the green and blue channels.</p>
 
         <p>We'll start by loading <span class="pixel-roll" data-rolls="1">single images</span>, but since we're interested in the cumulative behavior of our pixels, we can also speed up the process and analyze <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or <span class="pixel-roll" data-rolls="1000">1000 images</span> at once. <span class="pixel-roll" data-rolls="-1">Reset</span> clears our graph.</p>
 
-        <p>And, instead of <span class="pixel-change" data-source="flowers">flower images</span>, we can look at datasets of images of <span class="pixel-change" data-source="clouds">clouds</span>, like these:</p>
+        <p>For these cloud images, it seems like all 3 channels could be modeled as gaussian distributions. The peak of the blue channel (its average value) is slightly larger (further to the right) than the other two channels. This means that, on average, the blue channel contributes more than the other two channels to overall pixel colors. This makes intuitive sense given that these are pictures of clouds in the sky.</p>
+      </div>
+
+      <div class="section-canvas">
+        <div id="graph-rgb-r" class="graph-pixels rgb r"></div>
+        <div id="graph-rgb-g" class="graph-pixels rgb g"></div>
+        <div id="graph-rgb-b" class="graph-pixels rgb b"></div>
+      </div>
+    </section>
+
+    <section class="section" data-pixel-section-idx="2">
+      <div class="section-text">
+        <div class="section-title">More Data</div>
+
+        <p>Instead of <span class="pixel-change" data-source="clouds">cloud images</span>, we can perform the same kind of analysis for datasets of <span class="pixel-change" data-source="flowers">flower images</span>, like these:</p>
+
+        <div class="image-container">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/00_001.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/01_001.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/10_001.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/04_021.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/10_011.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/12_012.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/08_008.png">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/flowers/07_009.png">
+        </div>
 
         <p>or <span class="pixel-change" data-source="metfaces">paintings of faces</span>, like these:</p>
 
+        <div class="image-container">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/12700-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/13334-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/437364-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/436630-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/15025-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/12667-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/11015-00.jpg">
+          <img src="https://raw.githubusercontent.com/PSAM-5020-2025S-A/5020-utils/main/datasets/image/metfaces/256/10218-00.jpg">
+        </div>
+
         <p>Once we click on one of the buttons above to change datasets, we can again load and analyze a <span class="pixel-roll" data-rolls="1">single images</span>, <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or <span class="pixel-roll" data-rolls="1000">1000 images</span> at once. And, again, <span class="pixel-roll" data-rolls="-1">reset</span> clears our graph.</p>
 
-        <p>Once thousands of images are analyzed, each of the datasets seem to converge to a specific, and yet different, distribution. Some look like they could be approximated by a normal distribution, or a superposition of two normal distributions, while others seem to converge to something closer to a xxxx distribution.</p>
+        <p>Once thousands of images are analyzed, each of the datasets seem to converge to a specific, and yet different, distribution. Some look like they could be approximated by a normal distribution, or a superposition of two normal distributions because they have two peaks. Other graphs seem to converge to something closer to a <a href="https://en.wikipedia.org/wiki/Gamma_distribution" target="_blank">Gamma distribution</a>.</p>
       </div>
 
       <div class="section-canvas">
