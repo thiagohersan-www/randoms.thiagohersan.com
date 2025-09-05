@@ -67,9 +67,13 @@ window.addEventListener("load", async () => {
     const el = evt.target;
     const sectionEl = el.closest("section");
     const graphEls = sectionEl.querySelectorAll(".graph-pixels");
+    const datasetEl = sectionEl.querySelector(".dataset");
+
     const idx = parseInt(sectionEl.dataset.pixelSectionIdx);
     const source = el.dataset.source;
     const rolls = MY_PIXELS[idx][0].rolls;
+
+    datasetEl.innerHTML = `${source}`;
 
     MY_PIXELS[idx].forEach((p, i) => {
       p.data = pixelData[source][i];

@@ -29,7 +29,11 @@
       </div>
 
       <div class="section-canvas">
-        <div id="graph-uniform-1" class="graph"></div>
+        <div class="container">
+          <div class="graph"></div>
+          <div class="axis"></div>
+          <div>Roll Count: <span class="counter">0</span></div>
+        </div>
       </div>
     </section>
 
@@ -51,7 +55,11 @@
       </div>
 
       <div class="section-canvas">
-        <div id="graph-uniform-2" class="graph"></div>
+        <div class="container">
+          <div class="graph"></div>
+          <div class="axis"></div>
+          <div>Roll Count: <span class="counter">0</span></div>
+        </div>
       </div>
     </section>
 
@@ -61,7 +69,7 @@
 
         <p>What if we roll and sum up 3 fair six-sided dice rolled together? Let's simulate a few <span class="dice-roll" data-rolls="1">single rolls</span> and look at our graph as it accumulates the total number of times each outcome shows up. With 3 dice the total number of possible outcomes is 16: the sums 3 to 18. Like before, outcomes in the center of this range are more likely, while outcomes on the edges are more rare.</p>
 
-        <p>Let's again simulate 100s or 1000s of rolls to get to our symmetric distribution graph. We can do this by doing <span class="dice-roll" data-rolls="100">100</span> rolls at once, or <span class="dice-roll" data-rolls="1000">1000 rolls</span>.</p>
+        <p>Let's again simulate 100s or 1000s of rolls to get to our symmetric distribution graph. We can do this by doing <span class="dice-roll" data-rolls="100">100 rolls</span> at once, or <span class="dice-roll" data-rolls="1000">1000 rolls</span>.</p>
 
         <p>There's nothing special about using <span class="dice-change" data-dice="2">two dice</span> or <span class="dice-change" data-dice="3">three dice</span>. We can simulate rolling <span class="dice-change" data-dice="4">four dice</span>, <span class="dice-change" data-dice="8">eight dice</span>, or even <span class="dice-change" data-dice="16">sixteen dice</span> at once, while keeping track of the sum of their faces using our graph on the right.</p>
 
@@ -71,7 +79,12 @@
       </div>
 
       <div class="section-canvas">
-        <div id="graph-uniform-k" class="graph"></div>
+        <div class="container">
+          <div class="graph"></div>
+          <div class="axis"></div>
+          <div>Number of Dice: <span class="dice-count">3</span></div>
+          <div>Roll Count: <span class="counter">0</span></div>
+        </div>
       </div>
     </section>
 
@@ -120,7 +133,11 @@
       </div>
 
       <div class="section-canvas">
-        <div id="graph-red" class="graph-pixels"></div>
+        <div class="container">
+          <div class="graph-pixels"></div>
+          <div class="axis"></div>
+          <div>Image Count: <span class="counter">0</span></div>
+        </div>
       </div>
     </section>
 
@@ -136,9 +153,13 @@
       </div>
 
       <div class="section-canvas">
-        <div id="graph-rgb-r" class="graph-pixels rgb r"></div>
-        <div id="graph-rgb-g" class="graph-pixels rgb g"></div>
-        <div id="graph-rgb-b" class="graph-pixels rgb b"></div>
+        <div class="container">
+          <div class="graph-pixels rgb r"></div>
+          <div class="graph-pixels rgb g"></div>
+          <div class="graph-pixels rgb b"></div>
+          <div class="axis"></div>
+          <div>Image Count: <span class="counter">0</span></div>
+        </div>
       </div>
     </section>
 
@@ -178,9 +199,14 @@
       </div>
 
       <div class="section-canvas">
-        <div id="graph-rgb-r" class="graph-pixels rgb r"></div>
-        <div id="graph-rgb-g" class="graph-pixels rgb g"></div>
-        <div id="graph-rgb-b" class="graph-pixels rgb b"></div>
+        <div class="container">
+          <div class="graph-pixels rgb r"></div>
+          <div class="graph-pixels rgb g"></div>
+          <div class="graph-pixels rgb b"></div>
+          <div class="axis"></div>
+          <div>Dataset: <span class="dataset">clouds</span></div>
+          <div>Image Count: <span class="counter">0</span></div>
+        </div>
       </div>
     </section>
     

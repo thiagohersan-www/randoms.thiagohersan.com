@@ -31,6 +31,7 @@ class Dice {
   }
 
   draw(graphEl) {
+    const countEl = graphEl.parentElement.querySelector(".counter") ?? null;
     graphEl.innerHTML = "";
 
     const max = Math.max(...this.counts);
@@ -54,6 +55,10 @@ class Dice {
         mbar.classList.add("tiny");
       }
       graphEl.appendChild(mbar);
+    }
+
+    if (countEl) {
+      countEl.innerHTML = `${this.rolls}`;
     }
   }
 }
@@ -79,9 +84,13 @@ window.addEventListener("load", () => {
     const el = evt.target;
     const sectionEl = el.closest("section");
     const graphEl = sectionEl.querySelector(".graph");
+    const diceEl = sectionEl.querySelector(".dice-count");
+
     const idx = parseInt(sectionEl.dataset.diceSectionIdx);
     const dice = parseInt(el.dataset.dice);
     const rolls = MY_DICE[idx].rolls;
+
+    diceEl.innerHTML = `${dice}`;
 
     MY_DICE[idx] = new Dice(dice);
     MY_DICE[idx].roll(rolls).draw(graphEl);

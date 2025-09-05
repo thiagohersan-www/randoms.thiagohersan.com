@@ -18,9 +18,17 @@ html, body {
   flex-direction: row;
 }
 
+.section + .section {
+  margin-top: 32px;
+}
+
 .section-text,
 .section-canvas {
   width: 50%;
+}
+
+.section-text {
+  min-height: 480px;
 }
 
 .section-text .section-title {
@@ -37,11 +45,19 @@ html, body {
 }
 
 .section-canvas {
-  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  min-height: 480px;
+}
+
+.section-canvas .container {
+  position: relative;
+  width: 95%;
+}
+
+.section-canvas .dataset {
+  text-transform: capitalize;
 }
 
 p + p {
