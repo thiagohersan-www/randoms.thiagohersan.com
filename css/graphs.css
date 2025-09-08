@@ -1,5 +1,6 @@
 .graph,
-.graph-pixels {
+.graph-pixels,
+.graph-colors {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -7,8 +8,13 @@
   /* border: 1px #000 solid; */
 }
 
-.graph-pixels {
-  min-width: 250px;
+.graph-pixels,
+.graph-colors {
+  min-width: 360px;
+}
+
+.graph-colors {
+  height: 250px;
 }
 
 .bar {
@@ -70,4 +76,20 @@
 .graph-pixels.rgb.b .bar {
   border-top: 4px #22a solid;
   background-color: #00f4;
+}
+
+.graph-colors .color-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.color-div {
+  display: inline-block;
+  width: 30%;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px #222 solid;
+  background-color: #fff;
 }

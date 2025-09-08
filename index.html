@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="./css/graphs.css">
     <script src="./js/dice.js"></script>
     <script src="./js/pixels.js"></script>
+    <script src="./js/color.js"></script>
   </head>
   <body>
     <title>Distributions</title>
@@ -96,11 +97,17 @@
 
         <p>Let's look at some distributions that have little to do with dice: images and their pixel values.</p>
 
-        <p>Pixels on images are made up of 3 values that represent how much red, green and blue is present on the color of the pixel. Each of these values is stored as a number between 0 and 255, where 0 represents no contribution from that channel and 255 is the strongest amount of contribution that channel can have to the overall color of the pixel. If this sounds strange, we can use the interface on the right to look at examples and build some intuition about how color is represented in an image file.</p>
+        <p>Pixels on images are made up of 3 values that represent how much red, green and blue is present on the color of the pixel. Each of these values is stored as a number between 0 and 255, where 0 represents no contribution from that channel and 255 is the strongest amount of contribution that channel can have to the overall color of the pixel. If this sounds strange, we can use the interface on the right to look at examples and build some intuition about how computers represent colors.</p>
       </div>
 
       <div class="section-canvas">
-        <div id="graph-colors" class="graph-pixels"></div>
+        <div class="container">
+          <div class="graph-colors">
+            <canvas id="color-canvas" class="color-canvas"></canvas>
+          </div>
+          <div>Selected Color: <div id="color-div" class="color-div"></div></div>
+          <div>Contributions - Red: <span id="r-amount">255</span> | Green: <span id="g-amount">255</span> | Blue: <span id="b-amount">255</span></div>
+        </div>
       </div>
     </section>
 
