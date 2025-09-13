@@ -4,12 +4,19 @@
   box-sizing: border-box;
 }
 
-title {
-  display: block;
-}
-
 html, body {
   width: 100%;
+  font-size: 18px;
+}
+
+body {
+  padding: 10px;
+}
+
+title {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 24px;
 }
 
 .section {
@@ -33,15 +40,33 @@ html, body {
 
 .section-text .section-title {
   text-transform: uppercase;
+  font-size: 1.25rem;
 }
 
 .section-text .dice-roll,
 .section-text .dice-change,
 .section-text .pixel-roll,
 .section-text .pixel-change {
+  display: inline-block;
   cursor: pointer;
   user-select: none;
-  text-decoration: underline;
+
+  margin: 1px 0;
+  border: 1px #444 solid;
+  padding: 2px 10px 1px;
+  border-radius: 8px;
+
+  background-color: #eee;
+  color: #222;
+
+  transition: all 0.05s linear;
+}
+
+.section-text .dice-roll:hover,
+.section-text .dice-change:hover,
+.section-text .pixel-roll:hover,
+.section-text .pixel-change:hover {
+  background-color: #de9e9e;
 }
 
 .section-canvas {
