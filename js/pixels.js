@@ -30,6 +30,27 @@ class Pixels extends Dice {
 
     return this;
   }
+
+  draw(graphEl) {
+    super.draw(graphEl);
+
+    const axisEl = graphEl.parentElement.querySelector(".axis") ?? null;
+    axisEl.classList.add("pixels");
+    axisEl.innerHTML = "";
+
+    [0, 128, 255].forEach(i => {
+      const mtick = document.createElement("div");
+
+      mtick.classList.add("tick", "pixels");
+
+      if (this.rolls < 1) {
+        mtick.classList.add("hide");
+      }
+
+      mtick.innerHTML = `${i}`;
+      axisEl.appendChild(mtick);
+    });
+  }
 }
 
 const PIXELS_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/pix_vals.json";

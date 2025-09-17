@@ -32,29 +32,42 @@ class Dice {
 
   draw(graphEl) {
     const countEl = graphEl.parentElement.querySelector(".counter") ?? null;
+    const axisEl = graphEl.parentElement.querySelector(".axis") ?? null;
+
     graphEl.innerHTML = "";
+    axisEl.innerHTML = "";
 
     const max = Math.max(...this.counts);
-    const mbarClasses = ["bar"];
 
-    if (this.counts.length > 70) {
-      mbarClasses.push("hide");
+    const styleClasses = [];
+
+    if (this.counts.length > 70 || this.rolls < 1) {
+      styleClasses.push("hide");
     } else if (this.counts.length > 35) {
-      mbarClasses.push("small");
+      styleClasses.push("small");
     }
 
     for (let i = 0; i < this.counts.length; i++) {
       const mbar = document.createElement("div");
+      const mtick = document.createElement("div");
+
       const barHeight = this.counts[i] / max;
-      mbar.classList.add(...mbarClasses);
+      mbar.classList.add(...styleClasses, "bar");
+      mtick.classList.add(...styleClasses, "tick");
+
       mbar.dataset.x = i;
       mbar.style.height = `${barHeight * 100}%`;
+
       mbar.innerHTML = this.counts[i];
+      mtick.innerHTML = `${i + this.ndice}`;
 
       if (barHeight < 0.1) {
         mbar.classList.add("tiny");
+        mtick.classList.add("tiny");
       }
+
       graphEl.appendChild(mbar);
+      axisEl.appendChild(mtick);
     }
 
     if (countEl) {
