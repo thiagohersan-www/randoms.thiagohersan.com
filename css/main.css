@@ -21,12 +21,23 @@ title {
 
 .section {
   width: 100%;
+  height: calc(100vh - 2 * 28px);
   display: flex;
   flex-direction: row;
+
+  padding: 36px;
+  padding-bottom: 40px;
+  border: #222 1px solid;
+  border-radius: 5px;
+  margin-bottom: 28px;
+
+  position: sticky;
+  top: 28px;
+  background-color: #eee;
 }
 
 .section + .section {
-  margin-top: 32px;
+  margin-top: 50vh;
 }
 
 .section-text,
@@ -74,6 +85,10 @@ title {
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
+}
+
+.section-canvas.top {
+  justify-content: flex-start;
 }
 
 .section-canvas .container {
