@@ -1,7 +1,7 @@
-async function loadJson() {
-  const URL = "https://raw.githubusercontent.com/PSAM-5020-2025F-A/5020-utils/refs/heads/main/datasets/json/ansur-full-flat.json";
+const ANSUR_URL = "https://raw.githubusercontent.com/PSAM-5020-2025F-A/5020-utils/refs/heads/main/datasets/json/ansur-full-flat.json";
 
-  const result = await fetch(URL);
+async function getFeatureData(url) {
+  const result = await fetch(url);
   const jsonData = await result.json();
 
   const featureData = {};
@@ -10,64 +10,115 @@ async function loadJson() {
   });
 
   jsonData.forEach(i => Object.keys(i).forEach(k => featureData[k].push(i[k])));
+  delete featureData["gender"];
 
   return featureData;
 }
 
-function sum(vals) {
-  return vals.reduce((acc, v) => acc += v, 0);
+function addOption(el, val, label) {
+  const opt = document.createElement("option");
+  opt.value = val;
+  opt.innerHTML = label;
+  el.appendChild(opt);
 }
 
-function mean(vals) {
-  return sum(vals) / vals.length;
+function setupFeatures(features) {
+  const xSelEl = document.getElementById("x-select");
+  const ySelEl = document.getElementById("y-select");
+
+  xSelEl.addEventListener("change", updateGraph);
+  ySelEl.addEventListener("change", updateGraph);
+
+  addOption(xSelEl, "", "---");
+  addOption(ySelEl, "", "---");
+
+  features.forEach(feat => {
+    [xSelEl, ySelEl].forEach(sEl => {
+      addOption(sEl, feat, `${feat.replace(".", " ")}`);
+    });
+  });
 }
 
-function std(vals) {
-  const mu = mean(vals);
-  const variance = mean(vals.map(v => (v - mu) ** 2));
-  return variance ** 0.5;
+function setupScalers() {
+  const scaleSelEl = document.getElementById("scaler-select");
+  scaleSelEl.addEventListener("change", updateGraph);
 }
 
-function scaleMinMax(vals) {
-  const vmin = Math.min(...vals);
-  const vmax = Math.max(...vals);
-  return vals.map(v => (v - vmin) / (vmax - vmin));
+function setupLobf() {
+  const lobfBut = document.getElementById("lobf-select");
+  lobfBut.addEventListener("click", (evt) => {
+    evt.target.classList.toggle("selected");
+    updateGraph();
+  });
 }
 
-function scaleStandard(vals) {
-  const mu = mean(vals);
-  const sig = std(vals);
-  return vals.map(v => (v - mu) / sig);
+let mGraph;
+function setupGraph() {
+  const graphEl = document.getElementById("graph");
+  const w = graphEl.offsetWidth;
+  const h = 0.8 * window.innerHeight;
+  mGraph = new p5(scatterGraph(Math.min(w,h), Math.min(w,h)), "graph");
 }
-
-function sumDevs(A, B) {
-  const muA = mean(A);
-  const muB = mean(B);
-  const devA = A.map(v => (v - muA));
-  const devB = B.map(v => (v - muB));
-  return sum(devA.map((v, i) => v * devB[i]));
-}
-
-function cov(A, B) {
-  return sumDevs(A, B) / (A.length - 1);
-}
-
-function lobf(X, Y) {
-  const muX = mean(X);
-  const muY = mean(Y);
-
-  const m = sumDevs(X, Y) / sumDevs(X, X);
-  const b = muY - m * muX;
-
-  return { m, b }
-}
-
 
 let myData;
 document.addEventListener("DOMContentLoaded", async () => {
-  myData = await loadJson();
+  myData = await getFeatureData(ANSUR_URL);
 
-  // TODO: drop downs
-  // TODO: no scale, minmax, std
-  // TODO: LoBF
+  setupFeatures(Object.keys(myData));
+  setupScalers();
+  setupLobf();
+  setupGraph();
 });
+
+const scaleFunction = {
+  "none": (x) => x,
+  "minmax": scaleMinMax,
+  "standard": scaleStandard,
+};
+
+function updateGraph() {
+  const xSelEl = document.getElementById("x-select");
+  const ySelEl = document.getElementById("y-select");
+  const scaleSelEl = document.getElementById("scaler-select");
+  const lobfBut = document.getElementById("lobf-select");
+
+  const xStatsEl = document.getElementById("x-stats");
+  const yStatsEl = document.getElementById("y-stats");
+  const xyStatsEl = document.getElementById("xy-stats");
+
+
+  const xVar = xSelEl.value;
+  const yVar = ySelEl.value;
+  const sVal = scaleSelEl.value;
+  const lobdVal = lobfBut.classList.contains("selected");
+
+  xStatsEl.innerHTML = "";
+  yStatsEl.innerHTML = "";
+  xyStatsEl.innerHTML = "";
+
+  if (xVar === "" || yVar === "") return;
+
+  const xData = scaleFunction[sVal](myData[xVar]);
+  const yData = scaleFunction[sVal](myData[yVar]);
+
+  xStatsEl.innerHTML = `
+                        ${xVar}<br>
+                        min: ${Math.min(...xData).toPrecision(4)}<br>
+                        max: ${Math.max(...xData).toPrecision(4)}<br>
+                        mean: ${mean(xData).toPrecision(4)}<br>
+                        std: ${std(xData).toPrecision(4)}`;
+
+  yStatsEl.innerHTML = `
+                        ${yVar}<br>
+                        min: ${Math.min(...yData).toPrecision(4)}<br>
+                        max: ${Math.max(...yData).toPrecision(4)}<br>
+                        mean: ${mean(yData).toPrecision(4)}<br>
+                        std: ${std(yData).toPrecision(4)}`;
+
+  xyStatsEl.innerHTML = `
+                         X & Y<br>
+                         cov: ${cov(xData, yData).toPrecision(4)}<br>
+                         Y = ${lobf(xData, yData)["m"].toPrecision(4)} &middot; X + ${lobf(xData, yData)["b"].toPrecision(4)}`;
+
+  mGraph.updateGraph(xData, yData, lobdVal);
+}
