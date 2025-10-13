@@ -157,7 +157,7 @@ function updateGraph() {
                         std: ${std(yData).toPrecision(4)}`;
 
   xyStatsEl.innerHTML = `
-                         X & Y<br>
+                         <br>
                          cov: ${cov(xData, yData).toPrecision(4)}<br>
                          Y = ${lobf(xData, yData)["m"].toPrecision(4)} &middot; X + ${lobf(xData, yData)["b"].toPrecision(4)}`;
 
