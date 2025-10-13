@@ -1,14 +1,3 @@
-class ScatterPlot {
-  constructor(graphW, graphH) {
-    this.s
-  }
-
-  updateGraph(xData, yData) {
-
-  }
-}
-
-
 function scatterGraph(graphW, graphH) {
   return (s) => {
     s.setup = () => {
@@ -17,15 +6,23 @@ function scatterGraph(graphW, graphH) {
       s.noLoop();
     };
 
-    s.updateGraph = (x, y, drawLobf=false) => {
+    s.updateGraph = (x, y, scaler="none", drawLobf = false) => {
       const minDim = Math.min(...x, ...y);
       const maxDim = Math.max(...x, ...y);
 
-      const xplot = x.map(v => s.map(v, minDim, maxDim, 0, s.width));
-      const yplot = y.map(v => s.map(v, minDim, maxDim, s.height, 0));
+      const xAbs = Math.max(...x.map(v => Math.abs(v)));
+      const yAbs = Math.max(...y.map(v => Math.abs(v)));
 
-      const x0 = s.map(0, minDim, maxDim, 0, s.width);
-      const y0 = s.map(0, minDim, maxDim, s.height, 0);
+      const xMin = scaler == "standard" ? -xAbs : minDim;
+      const xMax = scaler == "standard" ? xAbs : maxDim;
+      const yMin = scaler == "standard" ? -yAbs : minDim;
+      const yMax = scaler == "standard" ? yAbs : maxDim;
+
+      const xplot = x.map(v => s.map(v, xMin, xMax, 0, s.width));
+      const yplot = y.map(v => s.map(v, yMin, yMax, s.height, 0));
+
+      const x0 = s.map(0, xMin, xMax, 0, s.width);
+      const y0 = s.map(0, yMin, yMax, s.height, 0);
 
       s.background(200);
       s.stroke(0, 100);
@@ -36,7 +33,7 @@ function scatterGraph(graphW, graphH) {
 
       s.fill(16, 200);
       s.noStroke();
-      xplot.forEach((v,i) => {
+      xplot.forEach((v, i) => {
         s.ellipse(v, yplot[i], 4, 4);
       });
 

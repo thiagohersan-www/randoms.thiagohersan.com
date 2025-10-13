@@ -54,10 +54,16 @@ function setupLobf() {
 
 let mGraph;
 function setupGraph() {
+  const xAxisEl = document.getElementById("x-axis");
+  const yAxisEl = document.getElementById("y-axis");
+
   const graphEl = document.getElementById("graph");
   const w = graphEl.offsetWidth;
   const h = 0.8 * window.innerHeight;
-  mGraph = new p5(scatterGraph(Math.min(w,h), Math.min(w,h)), "graph");
+  mGraph = new p5(scatterGraph(Math.min(w, h), Math.min(w, h)), "graph");
+
+  xAxisEl.style.width = `${Math.min(w, h)}px`;
+  yAxisEl.style.height = `${Math.min(w, h)}px`;
 }
 
 let myData;
@@ -86,6 +92,13 @@ function updateGraph() {
   const yStatsEl = document.getElementById("y-stats");
   const xyStatsEl = document.getElementById("xy-stats");
 
+  const xAxisMinEl = document.getElementById("x-min");
+  const xAxisMaxEl = document.getElementById("x-max");
+  const xAxisLabelEl = document.getElementById("x-label");
+
+  const yAxisMinEl = document.getElementById("y-min");
+  const yAxisMaxEl = document.getElementById("y-max");
+  const yAxisLabelEl = document.getElementById("y-label");
 
   const xVar = xSelEl.value;
   const yVar = ySelEl.value;
@@ -101,17 +114,45 @@ function updateGraph() {
   const xData = scaleFunction[sVal](myData[xVar]);
   const yData = scaleFunction[sVal](myData[yVar]);
 
+  const xMin = Math.min(...xData).toPrecision(4);
+  const xMax = Math.max(...xData).toPrecision(4);
+  const yMin = Math.min(...yData).toPrecision(4);
+  const yMax = Math.max(...yData).toPrecision(4);
+
+  xAxisLabelEl.innerHTML = `${xVar}`;
+  yAxisLabelEl.innerHTML = `${yVar}`;
+
+  if (sVal == "none") {
+    xAxisMinEl.innerHTML = `${Math.min(xMin, yMin)}`;
+    xAxisMaxEl.innerHTML = `${Math.max(xMax, yMax)}`;
+    yAxisMinEl.innerHTML = `${Math.min(xMin, yMin)}`;
+    yAxisMaxEl.innerHTML = `${Math.max(xMax, yMax)}`;
+  } else if (sVal == "minmax") {
+    xAxisMinEl.innerHTML = `${xMin}`;
+    xAxisMaxEl.innerHTML = `${xMax}`;
+    yAxisMinEl.innerHTML = `${yMin}`;
+    yAxisMaxEl.innerHTML = `${yMax}`;
+  } else {
+    const xAbs = Math.max(Math.abs(xMin), Math.abs(xMax));
+    const yAbs = Math.max(Math.abs(yMin), Math.abs(yMax));
+
+    xAxisMinEl.innerHTML = `${-xAbs}`;
+    xAxisMaxEl.innerHTML = `${xAbs}`;
+    yAxisMinEl.innerHTML = `${-yAbs}`;
+    yAxisMaxEl.innerHTML = `${yAbs}`;
+  }
+
   xStatsEl.innerHTML = `
                         ${xVar}<br>
-                        min: ${Math.min(...xData).toPrecision(4)}<br>
-                        max: ${Math.max(...xData).toPrecision(4)}<br>
+                        min: ${xMin}<br>
+                        max: ${xMax}<br>
                         mean: ${mean(xData).toPrecision(4)}<br>
                         std: ${std(xData).toPrecision(4)}`;
 
   yStatsEl.innerHTML = `
                         ${yVar}<br>
-                        min: ${Math.min(...yData).toPrecision(4)}<br>
-                        max: ${Math.max(...yData).toPrecision(4)}<br>
+                        min: ${yMin}<br>
+                        max: ${yMax}<br>
                         mean: ${mean(yData).toPrecision(4)}<br>
                         std: ${std(yData).toPrecision(4)}`;
 
@@ -120,5 +161,5 @@ function updateGraph() {
                          cov: ${cov(xData, yData).toPrecision(4)}<br>
                          Y = ${lobf(xData, yData)["m"].toPrecision(4)} &middot; X + ${lobf(xData, yData)["b"].toPrecision(4)}`;
 
-  mGraph.updateGraph(xData, yData, lobdVal);
+  mGraph.updateGraph(xData, yData, sVal, lobdVal);
 }

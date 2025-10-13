@@ -28,7 +28,21 @@
         <button id="lobf-select">Draw Line of Best Fit</button>
       </div>
 
-      <div id="graph" class="graph"></div>
+      <div class="graph-container">
+        <div id="y-axis" class="v-axis">
+          <div id="y-max" class="axis-item"></div>
+          <div id="y-label" class="axis-item"></div>
+          <div id="y-min" class="axis-item"></div>
+        </div>
+        <div class="graph-x-container">
+          <div id="graph" class="graph"></div>
+          <div id="x-axis" class="h-axis">
+            <div id="x-min" class="axis-item"></div>
+            <div id="x-label" class="axis-item"></div>
+            <div id="x-max" class="axis-item"></div>
+          </div>
+        </div>
+      </div>
 
       <div id="stats" class="stats">
         <div id="x-stats" class="var-stats"></div>
