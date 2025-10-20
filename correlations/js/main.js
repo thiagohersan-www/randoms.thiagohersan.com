@@ -1,4 +1,12 @@
-const ANSUR_URL = "https://raw.githubusercontent.com/PSAM-5020-2025F-A/5020-utils/refs/heads/main/datasets/json/ansur-full-flat.json";
+const DATA_URL = "https://raw.githubusercontent.com/PSAM-5020-2025F-A/5020-utils/refs/heads/main/datasets/json";
+
+const DATASETS = {
+  ANSUR: "ansur-full-flat",
+  diamondas: "diamonds",
+  houses: "LA_housing",
+  penguins: "penguins",
+  wines: "wines-full"
+};
 
 async function getFeatureData(url) {
   const result = await fetch(url);
@@ -22,12 +30,24 @@ function addOption(el, val, label) {
   el.appendChild(opt);
 }
 
+function setupData(datasets) {
+  const dataSelEl = document.getElementById("data-select");
+  dataSelEl.addEventListener("change", loadData);
+
+  Object.keys(datasets).forEach(set => {
+    addOption(dataSelEl, set, set);
+  });
+}
+
 function setupFeatures(features) {
   const xSelEl = document.getElementById("x-select");
   const ySelEl = document.getElementById("y-select");
 
   xSelEl.addEventListener("change", updateGraph);
   ySelEl.addEventListener("change", updateGraph);
+
+  xSelEl.innerHTML = "";
+  ySelEl.innerHTML = "";
 
   addOption(xSelEl, "", "---");
   addOption(ySelEl, "", "---");
@@ -66,14 +86,22 @@ function setupGraph() {
   yAxisEl.style.height = `${Math.min(w, h)}px`;
 }
 
+async function loadData() {
+  const dataSelEl = document.getElementById("data-select");
+  const selSet = dataSelEl.value;
+  const dataUrl = `${DATA_URL}/${DATASETS[selSet]}.json`;
+  myData = await getFeatureData(dataUrl);
+  setupFeatures(Object.keys(myData));
+}
+
 let myData;
 document.addEventListener("DOMContentLoaded", async () => {
-  myData = await getFeatureData(ANSUR_URL);
-
-  setupFeatures(Object.keys(myData));
+  setupData(DATASETS);
   setupScalers();
   setupLobf();
   setupGraph();
+
+  loadData();
 });
 
 const scaleFunction = {
