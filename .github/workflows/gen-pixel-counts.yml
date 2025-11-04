@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - "python/gen_pixel_counts.py"
+      - "python/gen_penguin_data.py"
       - ".github/workflows/gen-pixel-counts.yml"
 
 jobs:
@@ -29,9 +30,10 @@ jobs:
 
     - name: Gen Pixel Counts
       run: |
-        pip install numpy Pillow
+        pip install numpy Pillow pandas scikit-learn
         pushd python && python gen_pixel_counts.py
-        popd && mv python/pix_vals.json ./
+        python gen_penguin_data.py
+        popd && mv python/pix_vals.json python/penguins_3d.json ./
 
     - name: Release On Other Branch 💩
       run: |
@@ -41,7 +43,7 @@ jobs:
         TAG_NAME=${{ github.ref_name }}-$(git log --format=%h -1)
         git checkout --orphan release
         git rm --cached -r .
-        git add -f pix_vals.json
+        git add -f pix_vals.json penguins_3d.json
         git commit -m "release $TAG_NAME"
         git push origin :release
         git push origin release
