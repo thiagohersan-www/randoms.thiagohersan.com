@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/2.0.0/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <script>
+    const PENGUIN_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/penguins_3d.json";
+
+    const COLORS = [
+      "#003b5c",
+      "#0057e5",
+      "#41b6e6",
+      "#3ea908",
+      "#f0cc2e",
+      "#ec894d",
+      "#e50000",
+      "#e641b6",
+    ];
+
+    function anchorDistances(point, anchors) {
+      return anchors.map((a) =>
+        a.reduce((sum, v, idx) => (sum += (point[idx] - v) ** 2), 0)
+      );
+    }
+
+    function pointsToAnchor(points, anchors) {
+      return points.map((p) =>
+        anchorDistances(p, anchors).reduce((mIdx, cDist, cIdx, arr) => cDist < arr[mIdx] ? cIdx : mIdx, 0)
+      );
+    }
+
+    function randomIdxs(points, npoints) {
+      let bucket = points.map((v,i) => i);
+      const result = [];
+
+      for (let i = 0; i < npoints; i++) {
+        const idx = Math.floor(bucket.length * Math.random());
+        bucket.splice(idx, 1);
+        result.push(idx);
+      }
+      return result;
+    }
+
+    function updateKmeansAnchors(points, pointAnchors) {
+      const nAnchors = Math.max(...pointAnchors) + 1;
+      const clusterPoints = Array.from({ length: nAnchors }, () => []);
+
+      points.forEach((p, idx) => {
+        clusterPoints[pointAnchors[idx]].push(p);
+      });
+
+      const sums = clusterPoints.map(ps => ps.reduce((sum, p) => sum.map((s, i) => s+p[i]), [0,0,0]));
+      return sums.map((sum,i) => sum.map(s => s / clusterPoints[i].length));
+    }
+
+    function updateGraph(points, anchors) {
+      mGraph = buildGeometry(() => {
+        const mm = min(width, height) / 2;
+
+        const pointAnchors = pointsToAnchor(points, anchors);
+
+        noStroke();
+        for (let idx = 0; idx < points.length; idx += 1) {
+          const hexColor = COLORS[pointAnchors[idx] % COLORS.length];
+
+          const x = map(points[idx][0], -4, 4, -mm, mm);
+          const y = map(points[idx][1], -4, 4, -mm, mm);
+          const z = map(points[idx][2], -4, 4, -mm, mm);
+
+          push();
+          fill(hexColor);
+          translate(x, y, z);
+          sphere(3, 3, 3);
+          pop();
+        }
+
+        for (let idx = 0; idx < anchors.length; idx += 1) {
+          const hexColor = COLORS[idx % COLORS.length];
+
+          const x = map(anchors[idx][0], -4, 4, -mm, mm);
+          const y = map(anchors[idx][1], -4, 4, -mm, mm);
+          const z = map(anchors[idx][2], -4, 4, -mm, mm);
+
+          push();
+          fill(hexColor);
+          translate(x, y, z);
+          sphere(6, 6, 6);
+          pop();
+        }
+      });
+    }
+
+    let mGraph;
+    let mm;
+    let penguinPoints;
+    let penguinAnchors;
+
+    async function setup() {
+      createCanvas(windowWidth, windowHeight, WEBGL);
+      angleMode(DEGREES);
+
+      mm = min(width, height) / 2;
+      mGraph = new p5.Geometry();
+      const pointsXyz = await loadJSON(PENGUIN_URL);
+      penguinPoints = pointsXyz.map(({x,y,z}) => [x,y,z]);
+      penguinAnchors = randomIdxs(penguinPoints, 6).map(i => penguinPoints[i]);
+      updateGraph(penguinPoints, penguinAnchors);
+    }
+
+    function draw() {
+      background(200);
+      if (mGraph.vertices.length < 1) return;
+
+      orbitControl();
+
+      push();
+      translate(0, -mm / 3, 0);
+      rotateX(90);
+      rotateZ(-45);
+
+      stroke(150);
+      strokeWeight(2);
+
+      line(0, 0, -mm, 0, 0, mm);
+      line(0, -mm, 0, 0, mm, 0);
+      line(-mm, 0, 0, mm, 0, 0);
+
+      model(mGraph);
+
+      pop();
+    }
+
+    function keyPressed() {
+      if (key != " ") return;
+      const pointAnchors = pointsToAnchor(penguinPoints, penguinAnchors);
+      penguinAnchors = updateKmeansAnchors(penguinPoints, pointAnchors);
+      updateGraph(penguinPoints, penguinAnchors);
+    }
+
+    // TODO: have drop down for nclusters: resets/adds anchors
+    // TODO: play button
+  </script>
+
+  <body>
+    <main></main>
+  </body>
+</html>
