@@ -19,8 +19,8 @@
   </head>
 
   <script>
-    const COMPONENTS_URL = "https://psam-5020-2025f-a.github.io/5020-utils/datasets/csv/fonts_480_pca_components.csv";
-    const PCS_URL = "https://psam-5020-2025f-a.github.io/5020-utils/datasets/csv/fonts_480_pca_pcs.csv";
+    const COMPONENTS_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/fonts_480_pca_components.csv";
+    const PCS_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/fonts_480_pca_pcs.csv";
 
     async function loadComponents(url) {
       const lines = await loadStrings(url);
@@ -69,7 +69,8 @@
 
       background(200);
       push();
-      translate(300, 300);
+      console.log(width, width-300);
+      translate(300 + (width-300)/2, height/2);
       noStroke();
       fill(0);
       for (let i = 0; i < math.size(pcaChar)[0]; i++) {
@@ -118,7 +119,7 @@
       fontSel.option("--");
       fontData.fonts.forEach(v => fontSel.option(v));
       fontSel.selected("--");
-      fontSel.position(width - 260, 20);
+      fontSel.position(20, 20);
       fontSel.size(100);
       fontSel.changed(() => loadSliders(fontData.pcs, pcaData));
 
@@ -126,12 +127,12 @@
       charSel.option("--");
       fontData.chars.forEach(v => charSel.option(v));
       charSel.selected("--");
-      charSel.position(width - 140, 20);
+      charSel.position(140, 20);
       charSel.size(50);
       charSel.changed(() => loadSliders(fontData.pcs, pcaData));
 
       resetButt = createButton("reset");
-      resetButt.position(width - 70, 20);
+      resetButt.position(210, 20);
       resetButt.size(50);
       resetButt.mousePressed(() => loadSliders(fontData.pcs, pcaData));
 
@@ -144,7 +145,7 @@
         const mSlide = createSlider(-minMax, minMax, 0, 0.000001);
 
         mSlide.size(240);
-        mSlide.position(width - 260, 60 + i * 40);
+        mSlide.position(20, 60 + i * 40);
         mSlide.changed(() => drawChar(pcaData));
         mSlide.id(`pc${i}`);
         if(i > 15) mSlide.hide();

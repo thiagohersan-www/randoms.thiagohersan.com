@@ -1,12 +1,13 @@
-name: Publish pix counts
+name: Publish Data
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - "python/gen_pixel_counts.py"
+      - "python/gen_font_pca_data.py"
       - "python/gen_penguin_data.py"
-      - ".github/workflows/gen-pixel-counts.yml"
+      - "python/gen_pixel_counts.py"
+      - ".github/workflows/gen-data.yml"
 
 jobs:
   build:
@@ -28,12 +29,13 @@ jobs:
         rm -rf data/image/metfaces/256 data/image/metfaces/1024
         popd
 
-    - name: Gen Pixel Counts
+    - name: Gen Datasets
       run: |
         pip install numpy Pillow pandas scikit-learn
         pushd python && python gen_pixel_counts.py
         python gen_penguin_data.py
-        popd && mv python/pix_vals.json python/penguins_3d.json ./
+        python gen_font_pca_data.py
+        popd && mv python/pix_vals.json python/penguins_3d.json python/fonts_*.csv ./
 
     - name: Release On Other Branch 💩
       run: |
@@ -43,7 +45,7 @@ jobs:
         TAG_NAME=${{ github.ref_name }}-$(git log --format=%h -1)
         git checkout --orphan release
         git rm --cached -r .
-        git add -f pix_vals.json penguins_3d.json
+        git add -f pix_vals.json penguins_3d.json fonts_*.csv
         git commit -m "release $TAG_NAME"
         git push origin :release
         git push origin release
