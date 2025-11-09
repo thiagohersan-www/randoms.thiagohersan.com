@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/mathjs@15.1.0/lib/browser/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/2.0.0/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <script>
+    const COMPONENTS_URL = "https://psam-5020-2025f-a.github.io/5020-utils/datasets/csv/fonts_480_pca_components.csv";
+    const PCS_URL = "https://psam-5020-2025f-a.github.io/5020-utils/datasets/csv/fonts_480_pca_pcs.csv";
+
+    async function loadComponents(url) {
+      const lines = await loadStrings(url);
+      comps = lines.slice(1, lines.length - 1).map(s => s.split(",").map(v => parseFloat(v)));
+      return math.matrix(comps);
+    }
+
+    async function loadPCs(url) {
+      const lines = await loadStrings(url);
+      const pcs_flat = lines.slice(1, lines.length-1).map(s => s.split(",").map((v,i) => i>1?parseFloat(v):v));
+      const pcs = pcs_flat.map(v => [v[0], v[1], v.slice(2)]); 
+      const chars = Array.from(pcs_flat.reduce((acc, v) => acc.add(v[1]), new Set())).toSorted();
+      const fonts = Array.from(pcs_flat.reduce((acc, v) => acc.add(v[0]), new Set())).toSorted();
+      return {pcs, chars, fonts}
+    }
+
+    function filterPCs(pcs, font, char) {
+      rpcs = JSON.parse(JSON.stringify(pcs));
+
+      if (font && font != "--") {
+        rpcs = rpcs.filter(v => v[0] == font);
+      }
+
+      if (char && char != "--") {
+        rpcs = rpcs.filter(v => v[1] == char);
+      }
+
+      return math.matrix(rpcs.map(v => v[2]));
+    }
+
+    function iPCA(pcs, components) {
+      const size = math.size(components);
+      const mean = math.subset(components, math.index(0, math.range(0, size[1])));
+      const imatrix = math.subset(components, math.index(math.range(1, size[0]), math.range(0, size[1])));
+      return math.add(math.multiply(pcs, imatrix), mean);
+    }
+
+    function drawChar(pcaData) {
+      const pcs = math.zeros(1, math.size(pcaData)[0] - 1);
+
+      for (let i = 0; i < mSliders.length; i++) {
+        pcs.set([0, i], parseFloat(mSliders[i].value()));
+      }
+
+      const pcaChar = math.reshape(iPCA(pcs, pcaData), [-1, 2]);
+
+      background(200);
+      push();
+      translate(300, 300);
+      noStroke();
+      fill(0);
+      for (let i = 0; i < math.size(pcaChar)[0]; i++) {
+        const x = pcaChar.get([i, 0]) * 100;
+        const y = pcaChar.get([i, 1]) * 100;
+        ellipse(x, y, 4);
+      }
+      pop();
+    }
+
+    function loadSliders(pcs, pcaData) {
+      const font = fontSel.value();
+      const char = charSel.value();
+
+      const filtered = filterPCs(pcs, font, char);
+      const vals = math.mean(filterPCs(pcs, font, char), 0);
+
+      for(let i = 0; i < mSliders.length; i++) {
+        if (font || char) {
+          mSliders[i].value(vals.get([i]));
+        } else {
+          mSliders[i].value(0);
+        }
+      }
+
+      drawChar(pcaData);
+    }
+
+    let resetButt;
+    let fontSel;
+    let charSel;
+    const mSliders = [];
+
+    let fontData;
+    let pcaData;
+
+    async function setup() {
+      createCanvas(windowWidth, windowHeight);
+      background(200);
+      noLoop();
+
+      fontData = await loadPCs(PCS_URL);
+      pcaData = await loadComponents(COMPONENTS_URL);
+
+      fontSel = createSelect();
+      fontSel.option("--");
+      fontData.fonts.forEach(v => fontSel.option(v));
+      fontSel.selected("--");
+      fontSel.position(width - 260, 20);
+      fontSel.size(100);
+      fontSel.changed(() => loadSliders(fontData.pcs, pcaData));
+
+      charSel = createSelect();
+      charSel.option("--");
+      fontData.chars.forEach(v => charSel.option(v));
+      charSel.selected("--");
+      charSel.position(width - 140, 20);
+      charSel.size(50);
+      charSel.changed(() => loadSliders(fontData.pcs, pcaData));
+
+      resetButt = createButton("reset");
+      resetButt.position(width - 70, 20);
+      resetButt.size(50);
+      resetButt.mousePressed(() => loadSliders(fontData.pcs, pcaData));
+
+      const allPcs = filterPCs(fontData.pcs);
+      const pcMins = math.min(allPcs, 0);
+      const pcMaxs = math.max(allPcs, 0);
+
+      for (let i = 0; i < math.size(pcMaxs)[0]; i ++) {
+        const minMax = max(abs(pcMins.get([i])), abs(pcMaxs.get([i])));
+        const mSlide = createSlider(-minMax, minMax, 0, 0.000001);
+
+        mSlide.size(240);
+        mSlide.position(width - 260, 60 + i * 40);
+        mSlide.changed(() => drawChar(pcaData));
+        mSlide.id(`pc${i}`);
+        if(i > 15) mSlide.hide();
+        mSliders.push(mSlide);
+      }
+
+      drawChar(pcaData);
+    }
+  </script>
+
+  <body>
+    <main></main>
+  </body>
+</html>
