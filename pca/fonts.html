@@ -24,14 +24,14 @@
 
     async function loadComponents(url) {
       const lines = await loadStrings(url);
-      comps = lines.slice(1, lines.length - 1).map(s => s.split(",").map(v => parseFloat(v)));
+      const comps = lines.slice(1, lines.length - 1).map(s => s.split(",").map(v => parseFloat(v)));
       return math.matrix(comps);
     }
 
     async function loadPCs(url) {
       const lines = await loadStrings(url);
-      const pcs_flat = lines.slice(1, lines.length-1).map(s => s.split(",").map((v,i) => i>1?parseFloat(v):v));
-      const pcs = pcs_flat.map(v => [v[0], v[1], v.slice(2)]); 
+      const pcs_flat = lines.slice(1, lines.length - 1).map(s => s.split(",").map((v,i) => i>1?parseFloat(v):v));
+      const pcs = pcs_flat.map(v => [v[0], v[1], v.slice(2)]);
       const chars = Array.from(pcs_flat.reduce((acc, v) => acc.add(v[1]), new Set())).toSorted();
       const fonts = Array.from(pcs_flat.reduce((acc, v) => acc.add(v[0]), new Set())).toSorted();
       return {pcs, chars, fonts}
@@ -69,7 +69,6 @@
 
       background(200);
       push();
-      console.log(width, width-300);
       translate(300 + (width-300)/2, height/2);
       noStroke();
       fill(0);
@@ -86,7 +85,7 @@
       const char = charSel.value();
 
       const filtered = filterPCs(pcs, font, char);
-      const vals = math.mean(filterPCs(pcs, font, char), 0);
+      const vals = math.mean(filtered, 0);
 
       for(let i = 0; i < mSliders.length; i++) {
         if (font || char) {
@@ -104,16 +103,13 @@
     let charSel;
     const mSliders = [];
 
-    let fontData;
-    let pcaData;
-
     async function setup() {
       createCanvas(windowWidth, windowHeight);
       background(200);
       noLoop();
 
-      fontData = await loadPCs(PCS_URL);
-      pcaData = await loadComponents(COMPONENTS_URL);
+      const fontData = await loadPCs(PCS_URL);
+      const pcaData = await loadComponents(COMPONENTS_URL);
 
       fontSel = createSelect();
       fontSel.option("--");

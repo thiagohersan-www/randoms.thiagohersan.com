@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/mathjs@15.1.0/lib/browser/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/2.0.0/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <script>
+    const COMPONENTS_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/sils_pca_components.csv";
+    const PCS_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/sils_pca_pcs.csv";
+
+    async function loadData(url) {
+      const lines = await loadStrings(url);
+      const data = lines.slice(1, lines.length - 1).map(s => s.split(",").map(v => parseFloat(v)));
+      return math.matrix(data);
+    }
+
+    function filterPCs(pcs, idx) {
+      const size = math.size(pcs);
+      if (idx !== null && idx > -1) {
+        return math.subset(pcs, math.index(idx, math.range(0, size[1])));
+      } else {
+        return math.zeros(size[1]);
+      }
+    }
+
+    function iPCA(pcs, components) {
+      const size = math.size(components);
+      const mean = math.subset(components, math.index(0, math.range(0, size[1])));
+      const imatrix = math.subset(components, math.index(math.range(1, size[0]), math.range(0, size[1])));
+      return math.add(math.multiply(pcs, imatrix), mean);
+    }
+
+    function drawSil(pcaData) {
+      const pcs = math.zeros(1, math.size(pcaData)[0] - 1);
+
+      for (let i = 0; i < mSliders.length; i++) {
+        pcs.set([0, i], parseFloat(mSliders[i].value()));
+      }
+
+      const pcaChar = math.reshape(iPCA(pcs, pcaData), [-1, 2]);
+
+      background(200);
+      push();
+      translate(170 + (width - 170) / 2, height / 2);
+      noStroke();
+      fill(0);
+      for (let i = 0; i < math.size(pcaChar)[0]; i++) {
+        const x = pcaChar.get([i, 0]) * 500;
+        const y = pcaChar.get([i, 1]) * 500;
+        ellipse(x, y, 4);
+      }
+      pop();
+    }
+
+    function loadSliders(pcs, pcaData) {
+      const silIdx = parseInt(idxSel.value());
+      const filtered = filterPCs(pcs, silIdx);
+
+      for(let i = 0; i < mSliders.length; i++) {
+        mSliders[i].value(filtered.get([i]));
+      }
+
+      drawSil(pcaData);
+    }
+
+    let resetButt;
+    let idxSel;
+    const mSliders = [];
+
+    async function setup() {
+      createCanvas(windowWidth, windowHeight);
+      background(200);
+      noLoop();
+
+      const silData = await loadData(PCS_URL);
+      const pcaData = await loadData(COMPONENTS_URL);
+
+      idxSel = createInput('-1', 'number');
+      idxSel.position(20, 20);
+      idxSel.size(80);
+      idxSel.changed(() => loadSliders(silData, pcaData));
+
+      resetButt = createButton("reset");
+      resetButt.position(120, 20);
+      resetButt.size(50);
+      resetButt.mousePressed(() => loadSliders(silData, pcaData));
+
+      const pcMins = math.min(silData, 0);
+      const pcMaxs = math.max(silData, 0);
+
+      for (let i = 0; i < math.size(pcMaxs)[0]; i ++) {
+        const minMax = max(abs(pcMins.get([i])), abs(pcMaxs.get([i])));
+        const mSlide = createSlider(-minMax, minMax, 0, 0.000001);
+
+        mSlide.size(150);
+        mSlide.position(20, 60 + i * 40);
+        mSlide.changed(() => drawSil(pcaData));
+        mSlide.id(`pc${i}`);
+        if(i > 15) mSlide.hide();
+        mSliders.push(mSlide);
+      }
+
+      drawSil(pcaData);
+    }
+  </script>
+
+  <body>
+    <main></main>
+  </body>
+</html>
