@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/2.0.0/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <script>
+    const PENGUIN_URL = "https://randoms.thiagohersan.com/data/penguins_3d.json";
+
+    const COLORS = [
+      "#003b5c",
+      "#0057e5",
+      "#41b6e6",
+      "#3ea908",
+      "#f0cc2e",
+      "#ec894d",
+      "#e50000",
+      "#e641b6",
+    ];
+
+    function anchorDistances(point, anchors) {
+      return anchors.map((a) =>
+        a.reduce((sum, v, idx) => (sum += (point[idx] - v) ** 2), 0)
+      );
+    }
+
+    function pointsToAnchor(points, anchors) {
+      return points.map((p) =>
+        anchorDistances(p, anchors).reduce((mIdx, cDist, cIdx, arr) => cDist < arr[mIdx] ? cIdx : mIdx, 0)
+      );
+    }
+
+    function randomIdxs(points, npoints) {
+      let bucket = points.map((v,i) => i);
+      const result = [];
+
+      for (let i = 0; i < npoints; i++) {
+        const idx = Math.floor(bucket.length * Math.random());
+        bucket.splice(idx, 1);
+        result.push(idx);
+      }
+      return result;
+    }
+
+    function updateKmeansAnchors(points, pointAnchors) {
+      const nAnchors = Math.max(...pointAnchors) + 1;
+      const clusterPoints = Array.from({ length: nAnchors }, () => []);
+
+      points.forEach((p, idx) => {
+        clusterPoints[pointAnchors[idx]].push(p);
+      });
+
+      const sums = clusterPoints.map(ps => ps.reduce((sum, p) => sum.map((s, i) => s+p[i]), [0,0,0]));
+      return sums.map((sum,i) => sum.map(s => clusterPoints[i].length > 0 ? s / clusterPoints[i].length : 2*Math.random()-1));
+    }
+
+    function updateGraph(points, anchors) {
+      mGraph = buildGeometry(() => {
+        const mm = min(width, height) / 2;
+
+        const pointAnchors = pointsToAnchor(points, anchors);
+
+        noStroke();
+        for (let idx = 0; idx < points.length; idx += 1) {
+          const hexColor = COLORS[pointAnchors[idx] % COLORS.length];
+
+          const x = map(points[idx][0], -4, 4, -mm, mm);
+          const y = map(points[idx][1], -4, 4, -mm, mm);
+          const z = map(points[idx][2], -4, 4, -mm, mm);
+
+          push();
+          fill(hexColor);
+          translate(x, y, z);
+          sphere(3, 3, 3);
+          pop();
+        }
+
+        for (let idx = 0; idx < anchors.length; idx += 1) {
+          const hexColor = COLORS[idx % COLORS.length];
+
+          const x = map(anchors[idx][0], -4, 4, -mm, mm);
+          const y = map(anchors[idx][1], -4, 4, -mm, mm);
+          const z = map(anchors[idx][2], -4, 4, -mm, mm);
+
+          push();
+          fill(hexColor);
+          translate(x, y, z);
+          sphere(6, 6, 6);
+          pop();
+        }
+      });
+    }
+
+    function setupPoints(points, nAnchors, strategy) {
+      let anchors = Array.from({length: nAnchors}, () => Array.from({length:3}, () => 6 * Math.random() - 3))
+      if (strategy == "points") {
+        anchors = randomIdxs(points, nAnchors).map(i => points[i]);
+      }
+      updateGraph(points, anchors);
+      return anchors;
+    }
+
+    function resetAnchors() {
+      penguinAnchors = setupPoints(penguinPoints, nSelect.selected(), rSelect.selected());
+    }
+
+    function stepKmeans() {
+      const pointAnchors = pointsToAnchor(penguinPoints, penguinAnchors);
+      penguinAnchors = updateKmeansAnchors(penguinPoints, pointAnchors);
+      updateGraph(penguinPoints, penguinAnchors);
+    }
+
+    let mGraph;
+    let mm;
+    let penguinPoints;
+    let penguinAnchors;
+    let nSelect;
+    let rSelect;
+    let stepButt;
+    let resetButt;
+
+    async function setup() {
+      createCanvas(windowWidth, windowHeight, WEBGL);
+      angleMode(DEGREES);
+
+      nSelect = createSelect();
+      Array.from({length: 7}, (x,i) => i+2).forEach(v => nSelect.option(v));
+      nSelect.selected(6);
+      nSelect.position(width - 240, 20);
+      nSelect.changed(resetAnchors);
+
+      stepButt = createButton("step");
+      stepButt.position(width - 195, 20);
+      stepButt.mousePressed(stepKmeans);
+
+      rSelect = createSelect();
+      rSelect.option("points");
+      rSelect.option("random");
+      rSelect.selected("points");
+      rSelect.position(width - 140, 20);
+      rSelect.changed(resetAnchors);
+
+      resetButt = createButton("reset");
+      resetButt.position(width - 60, 20);
+      resetButt.mousePressed(resetAnchors);
+
+      mm = min(width, height) / 2;
+      mGraph = new p5.Geometry();
+      const pointsXyz = await loadJSON(PENGUIN_URL);
+      penguinPoints = pointsXyz.map(({x,y,z}) => [x,y,z]);
+      resetAnchors();
+    }
+
+    function draw() {
+      background(200);
+      if (mGraph.vertices.length < 1) return;
+
+      orbitControl();
+
+      push();
+      translate(0, -mm / 3, 0);
+      rotateX(90);
+      rotateZ(-45);
+
+      stroke(150);
+      strokeWeight(2);
+
+      line(0, 0, -mm, 0, 0, mm);
+      line(0, -mm, 0, 0, mm, 0);
+      line(-mm, 0, 0, mm, 0, 0);
+
+      model(mGraph);
+
+      pop();
+    }
+  </script>
+
+  <body>
+    <main></main>
+  </body>
+</html>

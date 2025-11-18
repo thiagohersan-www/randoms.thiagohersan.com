@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      .drag-receive {
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 16px;
+        left: 16px;
+        width: calc(100% - 32px);
+        height: calc(100% - 32px);
+        border: 2px #000000 dashed;
+        border-radius: 10px;
+        font-size: 20px;
+        background: #ffffff55;
+      }
+    </style>
+  </head>
+
+  <script>
+    let mm;
+    let mGraph;
+    let dragLeaveOpacity = 1;
+
+    function imageToGeometry(img) {
+      if (img.width > img.height && img.width > 500) {
+        img.resize(500, 0);
+      } else if (img.height > 500) {
+        img.resize(0, 500);
+      }
+
+      mGraph = buildGeometry(() => {
+        const mm = min(width, height) / 2;
+
+        noStroke();
+        img.loadPixels();
+        for (let idx = 0; idx < img.pixels.length; idx += 4) {
+          const r = img.pixels[idx + 0];
+          const g = img.pixels[idx + 1];
+          const b = img.pixels[idx + 2];
+
+          const x = map(r, 0, 255, -mm, mm);
+          const y = map(g, 0, 255, -mm, mm);
+          const z = map(b, 0, 255, -mm, mm);
+
+          push();
+          fill(r, g, b);
+          translate(x, y, z);
+          sphere(3, 3, 3);
+          pop();
+        }
+
+        const dropDiv = document.getElementById("drag-receive");
+        dropDiv.innerHTML = "drop image here";
+        dropDiv.style.border = "2px #000000 dashed";
+        dropDiv.style.opacity = 0;
+        loop();
+      });
+    }
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight, WEBGL);
+      angleMode(DEGREES);
+
+      mm = min(width, height) / 2;
+      mGraph = new p5.Geometry();
+      noLoop();
+
+      const dropDiv = document.getElementById("drag-receive");
+
+      dropDiv.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropDiv.style.background = "#fffffff0";
+        dropDiv.style.opacity = 1;
+      });
+
+      dropDiv.addEventListener("dragleave", (event) => {
+        event.preventDefault();
+        dropDiv.style.background = "#ffffff55";
+        dropDiv.style.opacity = dragLeaveOpacity;
+      });
+
+      dropDiv.addEventListener("drop", (event) => {
+        event.preventDefault();
+        mGraph = new p5.Geometry();
+        noLoop();
+
+        dragLeaveOpacity = 0;
+        dropDiv.innerHTML = "LOADING";
+        dropDiv.style.background = "#ffffff00";
+        dropDiv.style.border = "0";
+
+        const reader = new FileReader();
+        const file = event.dataTransfer.files[0];
+        reader.onload = () => {
+          loadImage(reader.result, imageToGeometry);
+        };
+        setTimeout(() => reader.readAsDataURL(file), 50);
+      });
+    }
+
+    function draw() {
+      background(200);
+      if (mGraph.vertices.length < 1) return;
+
+      orbitControl();
+
+      push();
+      translate(0, -mm / 3, 0);
+      rotateX(90);
+      rotateZ(-45);
+
+      stroke(0);
+      strokeWeight(2);
+      line(-mm, -mm, -mm, -mm, -mm, mm);
+      line(-mm, -mm, -mm, -mm, mm, -mm);
+      line(-mm, -mm, -mm, mm, -mm, -mm);
+
+      model(mGraph);
+
+      pop();
+    }
+  </script>
+
+  <body>
+    <main></main>
+    <div id="drag-receive" class="drag-receive">drop image here</div>
+  </body>
+</html>
