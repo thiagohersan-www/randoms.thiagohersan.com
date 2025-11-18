@@ -3,5 +3,4 @@
 _site/
 .jekyll-cache/
 __pycache__/
-data/
-pix_vals.json
+python/data

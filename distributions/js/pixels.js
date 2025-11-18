@@ -53,7 +53,7 @@ class Pixels extends Dice {
   }
 }
 
-const PIXELS_URL = "https://raw.githubusercontent.com/thiagohersan-www/random-book/refs/heads/release/pix_vals.json";
+const PIXELS_URL = "https://randoms.thiagohersan.com/data/pix_vals.json";
 
 async function fetchData(mUrl) {
   const response = await fetch(mUrl);
