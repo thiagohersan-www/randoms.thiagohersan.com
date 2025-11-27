@@ -3,9 +3,8 @@ import pandas as pd
 
 from sklearn.decomposition import PCA
 
-if __name__ == "__main__":
-  FONT_URL = "https://psam-5020-2025f-a.github.io/5020-utils/datasets/csv/fonts_480_ordered.csv"
-  fonts_ordered_df = pd.read_csv(FONT_URL)
+def export_pcs_and_components(url, slug):
+  fonts_ordered_df = pd.read_csv(url)
 
   xy_cols = [c for c in fonts_ordered_df.columns if c.startswith(("x", "y"))]
   nonxy_cols = [c for c in fonts_ordered_df.columns if not c.startswith(("x", "y"))]
@@ -21,5 +20,12 @@ if __name__ == "__main__":
 
   fonts_components_df = pd.DataFrame(np.concatenate(([mpca.mean_], mpca.components_), axis=0), columns=xy_cols).round(6)
 
-  fonts_pca_df.to_csv(f"./fonts_{npoints}_pca_pcs.csv", index=False)
-  fonts_components_df.to_csv(f"./fonts_{npoints}_pca_components.csv", index=False)
+  fonts_pca_df.to_csv(f"./fonts_{npoints}_{slug}_pca_pcs.csv", index=False)
+  fonts_components_df.to_csv(f"./fonts_{npoints}_{slug}_pca_components.csv", index=False)
+
+
+URL = "https://psam-5020-2025f-a.github.io/5020-utils/datasets/csv/fonts_480_VARIANT.csv"
+
+if __name__ == "__main__":
+  for slug in ["polar", "distance"]:
+    export_pcs_and_components(URL.replace("VARIANT", slug), slug)
