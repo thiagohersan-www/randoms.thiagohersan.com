@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./css/main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.min.js"></script>
+    <script src="./js/stats.js"></script>
+    <script src="./js/graph.js"></script>
+    <script src="./js/main.js"></script>
+  </head>
+  <body>
+    <title>Correlation</title>
+
+    <section>
+      <div id="controls" class="controls">
+        <label for="data">Dataset</label>
+        <select name="data" id="data-select"></select>
+
+        <label for="X">X-axis Variable</label>
+        <select name="X" id="x-select"></select>
+
+        <label for="Y">Y-axis Variable</label>
+        <select name="Y" id="y-select"></select>
+
+        <label for="scaler">Variable Scaler</label>
+        <select name="scaler" id="scaler-select">
+          <option class="scaler-option" value="none">None</option>
+          <option class="scaler-option" value="minmax">MinMax</option>
+          <option class="scaler-option" value="standard">Standard</option>
+        </select>
+
+        <button id="lobf-select">Draw Line of Best Fit</button>
+      </div>
+
+      <div class="graph-container">
+        <div id="y-axis" class="v-axis">
+          <div id="y-max" class="axis-item"></div>
+          <div id="y-label" class="axis-item"></div>
+          <div id="y-min" class="axis-item"></div>
+        </div>
+        <div class="graph-x-container">
+          <div id="graph" class="graph"></div>
+          <div id="x-axis" class="h-axis">
+            <div id="x-min" class="axis-item"></div>
+            <div id="x-label" class="axis-item"></div>
+            <div id="x-max" class="axis-item"></div>
+          </div>
+        </div>
+        <div id="stats" class="stats">
+          <div id="x-stats" class="var-stats"></div>
+          <div id="y-stats" class="var-stats"></div>
+          <div id="xy-stats" class="var-stats"></div>
+        </div>
+      </div>
+
+    </section>
+  </body>
+</html>
