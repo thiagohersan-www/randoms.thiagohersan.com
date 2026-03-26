@@ -40,17 +40,17 @@
 
     <section class="section" data-dice-section-idx="1">
       <div class="section-text">
-        <div class="section-title">Sum of Two Uniform Distributions</div>
+        <div class="section-title">Distribution of Sums</div>
 
-        <p>Let's imagine throwing a pair of six-sided fair dice. We're not going to read off their faces individually, but instead will sum the numbers rolled. Now, instead of six possible outcomes we have eleven possibilities: the numbers 2 through 12.</p>
+        <p>Let's imagine throwing a pair of six-sided fair dice. This time we're not going to read off their faces individually, but instead will add the two numbers rolled and track the sums instead of the individual rolls. Now, instead of six possible outcomes we have eleven possibilities: the numbers 2 through 12. This is because there's only one way of rolling a 2 (a pair of 1s) and one way of rolling a 12 (pair of 6s), while there are six ways of rolling a sum of 7: (1,6) (2,5) (3,4) (4,3) (5,2) (6,1).</p>
 
-        <p>Let's simulated a couple of <span class="dice-roll" data-rolls="1">single rolls</span> of this pair of dice. Like before, we'll use the graph on the right to keep track of the total number of times each of the possible eleven outcomes shows up.</p>
+        <p>Let's simulate a few <span class="dice-roll" data-rolls="1">single rolls</span> of this pair of dice. Like before, we'll use the graph on the right to keep track of the total number of times each of the possible eleven outcomes shows up.</p>
 
-        <p>Besides having a larger set of possible outcomes, something else that is different about this setup is that the possible outcomes are not equally likely to show up. There are more ways of rolling a 7 than a 2. There are more ways of rolling a 6 than a 3. This random event isn't uniform.</p>
+        <p>Besides having a larger set of possible outcomes, something else that is different about this setup is that the possible outcomes are not equally likely to show up. This random event is no longer uniform.</p>
 
         <p>Let's roll our pair of dice many times to see what happens in the long run. We can simulate a <span class="dice-roll" data-rolls="1">single roll</span> at a time, but like before, we are interested in the long run behavior of our dice, so it might be more helpful to simulate <span class="dice-roll" data-rolls="2">two rolls</span>, <span class="dice-roll" data-rolls="10">ten rolls</span>, <span class="dice-roll" data-rolls="100">100 rolls</span>, or even <span class="dice-roll" data-rolls="1000">1000 rolls</span> at a time. We can always <span class="dice-roll" data-rolls="-1">reset</span> our experiment if we want to start over.</p>
 
-        <p>After a few hundred rolls our graph should look symmetrical and slightly pyramidal. The most likely outcome, a sum of 7, should be six times more common than the least likely outcomes of 2 and 12. This is because there's only one way of rolling a 2 (a pair of 1s) and one way of rolling a 12 (pair of 6s), while there are six ways of rolling a sum or 7: (1,6) (2,5) (3,4) (4,3) (5,2) (6,1).</p>
+        <p>After a few hundred rolls our graph should look symmetrical and slightly pyramidal. The most likely outcome, a sum of 7, should be six times more common than the least likely outcomes of 2 and 12.</p>
 
         <p>By the same logic, the total number of times a sum of 3 is rolled is twice the number of times a sum of 2 is rolled and half the number of times a 5 is rolled. There are two ways of rolling a 3 (1,2) (2,1) and four ways of rolling a 5 (1,4) (2,3) (3,2) (4,1).</p>
       </div>
@@ -76,7 +76,7 @@
 
         <p>As before, wwe can always <span class="dice-roll" data-rolls="-1">reset</span> our experiment, or simulate <span class="dice-roll" data-rolls="100">100 rolls</span> or <span class="dice-roll" data-rolls="1000">1000 rolls</span> at once.</p>
 
-        <p>With more dice it takes more rolls to get to a pyramid-shaped graph, but it eventually shows up. Random events that have long-term outcomes with this kind of distribution are called normal or gaussian. Like uniform random events, there's no way of predicting the outcome of any single multi-dice roll, but over many rolls there are some very specific relationships we can expect to see from the cumulative behavior of our random events.</p>
+        <p>With more dice it takes more rolls to get to a pyramid-shaped graph, but it eventually shows up. Random events that have long-term outcomes with this kind of distribution are called Gaussian distributions. Like uniform random events, there's no way of predicting the outcome of any single multi-dice roll, but over many rolls there are some very specific relationships we can expect to see from the cumulative behavior of our random events.</p>
       </div>
 
       <div class="section-canvas">
@@ -144,7 +144,7 @@
 
         <p>Since we're interested in the long run, aggregate behavior of our random events, let's analyze <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or even <span class="pixel-roll" data-rolls="1000">1000 images</span> at a time. We can always <span class="pixel-roll" data-rolls="-1">reset</span> our experiment and our graph.</p>
 
-        <p>After about one thousand images, the overall shape of our graph stops changing too much. It converges to the overall distribution of red-channel values for this dataset. In some ways this particular distribution looks like a wide gaussian, with a peak around the value 100.</p>
+        <p>After about one thousand images, the overall shape of our graph stops changing too much. It converges to the overall distribution of red-channel values for this dataset. In some ways this particular distribution looks like a wide Gaussian, with a peak around the value 100.</p>
       </div>
 
       <div class="section-canvas">
@@ -164,7 +164,7 @@
 
         <p>We'll start by loading <span class="pixel-roll" data-rolls="1">single images</span>, but since we're interested in the cumulative behavior of our pixels, we can also speed up the process and analyze <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or <span class="pixel-roll" data-rolls="1000">1000 images</span> at once. <span class="pixel-roll" data-rolls="-1">Reset</span> clears our graph.</p>
 
-        <p>For these cloud images, it seems like all 3 channels could be modeled as gaussian distributions. The peak of the blue channel (its average value) is slightly larger (further to the right) than the other two channels. This means that, on average, the blue channel contributes more than the other two channels to overall pixel colors. This makes intuitive sense given that these are pictures of clouds in the sky.</p>
+        <p>For these cloud images, it seems like all 3 channels could be modeled as Gaussian distributions. The peak of the blue channel (its average value) is slightly larger (further to the right) than the other two channels. This means that, on average, the blue channel contributes more than the other two channels to overall pixel colors. This makes intuitive sense given that these are pictures of clouds in the sky.</p>
       </div>
 
       <div class="section-canvas">
@@ -226,7 +226,7 @@
 
         <p>Once we click on one of the buttons above to change datasets, we can again load and analyze a <span class="pixel-roll" data-rolls="1">single images</span>, <span class="pixel-roll" data-rolls="10">10 images</span>, <span class="pixel-roll" data-rolls="100">100 images</span>, or <span class="pixel-roll" data-rolls="1000">1000 images</span> at once. And, again, <span class="pixel-roll" data-rolls="-1">reset</span> clears our graph.</p>
 
-        <p>Once thousands of images are analyzed, each of the datasets seem to converge to a specific, and yet different, distribution. Some look like they could be approximated by a normal distribution, or a superposition of two normal distributions because they have two peaks. Other graphs seem to converge to something closer to a <a href="https://en.wikipedia.org/wiki/Gamma_distribution" target="_blank">Gamma distribution</a>.</p>
+        <p>Once thousands of images are analyzed, each of the datasets seem to converge to a specific, and yet different, distribution. Some look like they could be approximated by a Gaussian distribution, or a superposition of two Gaussian distributions because they have two peaks. Other graphs seem to converge to something closer to a <a href="https://en.wikipedia.org/wiki/Gamma_distribution" target="_blank">Gamma distribution</a>.</p>
       </div>
 
       <div class="section-canvas">

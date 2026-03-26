@@ -63,7 +63,6 @@ class Dice {
 
       if (barHeight < 0.1) {
         mbar.classList.add("tiny");
-        mtick.classList.add("tiny");
       }
 
       graphEl.appendChild(mbar);
