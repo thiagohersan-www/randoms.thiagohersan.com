@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/mathjs@15.1.0/lib/browser/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/2.0.0/p5.js"></script>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <script>
+    const COMPONENTS_URL = "https://randoms.thiagohersan.com/data/fonts_480_distance_pca_components.csv";
+    const PCS_URL = "https://randoms.thiagohersan.com/data/fonts_480_distance_pca_pcs.csv";
+
+    async function loadComponents(url) {
+      const lines = await loadStrings(url);
+      const comps = lines.slice(1, lines.length - 1).map(s => s.split(",").map(v => parseFloat(v)));
+      return math.matrix(comps);
+    }
+
+    async function loadPCs(url) {
+      const lines = await loadStrings(url);
+      const pcs_flat = lines.slice(1, lines.length - 1).map(s => s.split(",").map((v,i) => i>1?parseFloat(v):v));
+      const pcs = pcs_flat.map(v => [v[0], v[1], v.slice(2)]);
+      const chars = Array.from(pcs_flat.reduce((acc, v) => acc.add(v[1]), new Set())).toSorted();
+      const fonts = Array.from(pcs_flat.reduce((acc, v) => acc.add(v[0]), new Set())).toSorted();
+      return {pcs, chars, fonts}
+    }
+
+    function iPCA(pcs, components) {
+      const size = math.size(components);
+      const mean = math.subset(components, math.index(0, math.range(0, size[1])));
+      const imatrix = math.subset(components, math.index(math.range(1, size[0]), math.range(0, size[1])));
+      return math.add(math.multiply(pcs, imatrix), mean);
+    }
+
+    function getFontPCs(pcs, pcaData, fontEl, charEl, fontPCs) {
+      const font = fontEl.value();
+      const char = charEl.value();
+
+      if (!font || !char || font == "--" || char == "--") {
+        return null;
+      } else {
+        const rpcs = JSON.parse(JSON.stringify(pcs)).filter(v => (v[0] == font) && (v[1] == char));
+        return math.matrix(rpcs.map(v => v[2]));
+      }
+    }
+
+    let pcsFrom;
+    let pcsTo;
+
+    function justDrawChar(pcs, pcaData) {
+      const charPcs = math.zeros(1, math.size(pcaData)[0] - 1);
+
+      for (let i = 0; i < pcsFrom.size()[1]; i++) {
+        const mVal = pcsFrom.get([0,i]) + parseFloat(fromTo.value()) * (pcsTo.get([0,i]) - pcsFrom.get([0,i]));
+        charPcs.set([0, i], mVal);
+      }
+
+      const pcaChar = math.reshape(iPCA(charPcs, pcaData), [-1, 2]);
+
+      background(200);
+      push();
+      translate(300 + (width-300)/2, height/2);
+      noStroke();
+      fill(0);
+
+      for (let i = 0; i < math.size(pcaChar)[0]; i++) {
+        const x = pcaChar.get([i, 0]) * 100;
+        const y = pcaChar.get([i, 1]) * 100;
+        ellipse(x, y, 4);
+      }
+      pop();
+    }
+
+    function drawChar(pcs, pcaData) {
+      pcsFrom = getFontPCs(pcs, pcaData, fontFromSel, charFromSel);
+      pcsTo = getFontPCs(pcs, pcaData, fontToSel, charToSel);
+
+      if(!pcsFrom || !pcsTo) return;
+      justDrawChar(pcs, pcaData);
+    }
+
+    let resetButt;
+    let fontFromSel;
+    let charFromSel;
+    let fontToSel;
+    let charToSel;
+    let fromTo;
+
+    async function setup() {
+      createCanvas(windowWidth, windowHeight);
+      background(200);
+      noLoop();
+
+      const fontData = await loadPCs(PCS_URL);
+      const pcaData = await loadComponents(COMPONENTS_URL);
+
+      // FROM
+      fontFromSel = createSelect();
+      fontFromSel.option("--");
+      fontData.fonts.forEach(v => fontFromSel.option(v));
+      fontFromSel.selected("--");
+      fontFromSel.position(20, 20);
+      fontFromSel.size(100);
+      fontFromSel.changed(() => drawChar(fontData.pcs, pcaData));
+
+      charFromSel = createSelect();
+      charFromSel.option("--");
+      fontData.chars.forEach(v => charFromSel.option(v));
+      charFromSel.selected("--");
+      charFromSel.position(140, 20);
+      charFromSel.size(50);
+      charFromSel.changed(() => drawChar(fontData.pcs, pcaData));
+
+      // TO
+      fontToSel = createSelect();
+      fontToSel.option("--");
+      fontData.fonts.forEach(v => fontToSel.option(v));
+      fontToSel.selected("--");
+      fontToSel.position(20, 50);
+      fontToSel.size(100);
+      fontToSel.changed(() => drawChar(fontData.pcs, pcaData));
+
+      charToSel = createSelect();
+      charToSel.option("--");
+      fontData.chars.forEach(v => charToSel.option(v));
+      charToSel.selected("--");
+      charToSel.position(140, 50);
+      charToSel.size(50);
+      charToSel.changed(() => drawChar(fontData.pcs, pcaData));
+
+      fromTo = createSlider(0, 1, 0, 0.05);
+      fromTo.size(240);
+      fromTo.position(20, 100);
+      fromTo.changed(() => justDrawChar(fontData.pcs, pcaData));
+      fromTo.id("fromTo");
+
+      drawChar(fontData.pcs, pcaData);
+    }
+  </script>
+
+  <body>
+    <main></main>
+  </body>
+</html>
